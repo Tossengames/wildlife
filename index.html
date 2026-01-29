@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wildlife Survival Game</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="main-menu" class="screen">
+    <h1>🦁 Wildlife Survival Game 🐘</h1>
+    <button onclick="startScenario()">Play Scenarios</button>
+    <button onclick="pickContinent()">Pick Continent</button>
+    <button onclick="showInfo()">Animal Info</button>
+    <button onclick="shareRank()">Share My Rank</button>
+    <a href="https://ko-fi.com/yourusername" target="_blank">
+      <button>Support / Ko-fi</button>
+    </a>
+    <p id="rank">Rank: Beginner Observer</p>
+  </div>
+
+  <div id="scenario-screen" class="screen hidden">
+    <h2 id="animal-name"></h2>
+    <img id="animal-img" src="images/placeholder.png" alt="Animal">
+    <p id="animal-desc"></p>
+    <div id="options"></div>
+    <p id="feedback"></p>
+    <button id="next-btn" onclick="nextScenario()">Next</button>
+    <button onclick="backToMenu()">Back to Menu</button>
+  </div>
+
+  <div id="info-screen" class="screen hidden">
+    <h2>Animal Encyclopedia</h2>
+    <div id="animal-list"></div>
+    <div id="animal-details" class="hidden">
+      <h3 id="info-name"></h3>
+      <img id="info-img" src="images/placeholder.png" alt="Animal">
+      <p id="info-desc"></p>
+      <p><b>Signs of Aggression:</b> <span id="info-signs"></span></p>
+      <p><b>Triggers:</b> <span id="info-triggers"></span></p>
+      <p><b>Survival Tips:</b> <span id="info-tips"></span></p>
+      <button onclick="backToList()">Back</button>
+    </div>
+    <button onclick="backToMenu()">Back to Menu</button>
+  </div>
+
+  <script src="scenarios.js"></script>
+  <script src="animals.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
