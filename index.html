@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wildlife Survival Game</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wildlife Survival Game</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<!-- ===== MAIN MENU ===== -->
+<!-- MAIN MENU -->
 <div id="main-menu" class="screen">
   <div class="card">
     <h1>🦁 Wildlife Survival Game 🐘</h1>
@@ -16,18 +16,16 @@
     <button onclick="pickContinent()">Pick Continent</button>
     <button onclick="showInfo()">Animal Info</button>
     <button onclick="shareRank()">Share My Rank</button>
-    <a href="https://ko-fi.com/yourusername" target="_blank">
-      <button class="accent">Support / Ko-fi</button>
-    </a>
+    <a href="https://ko-fi.com/yourusername" target="_blank"><button class="accent">Support / Ko-fi</button></a>
     <p id="rank">Rank: Beginner Observer</p>
   </div>
 </div>
 
-<!-- ===== SCENARIO SCREEN ===== -->
+<!-- SCENARIO SCREEN -->
 <div id="scenario-screen" class="screen hidden">
   <div class="card">
     <h2 id="animal-name"></h2>
-    <img id="animal-img" src="images/placeholder.png" alt="Animal">
+    <img id="animal-img" src="https://via.placeholder.com/400x300?text=Animal+Image" alt="Animal">
     <p id="animal-desc"></p>
     <div id="options"></div>
     <p id="feedback"></p>
@@ -36,14 +34,14 @@
   </div>
 </div>
 
-<!-- ===== INFO / ENCYCLOPEDIA SCREEN ===== -->
+<!-- INFO SCREEN -->
 <div id="info-screen" class="screen hidden">
   <div class="card">
     <h2>Animal Encyclopedia</h2>
     <div id="animal-list"></div>
     <div id="animal-details" class="hidden">
       <h3 id="info-name"></h3>
-      <img id="info-img" src="images/placeholder.png" alt="Animal">
+      <img id="info-img" src="https://via.placeholder.com/400x300?text=Animal+Image" alt="Animal">
       <p id="info-desc"></p>
       <p><b>Signs of Aggression:</b> <span id="info-signs"></span></p>
       <p><b>Triggers:</b> <span id="info-triggers"></span></p>
