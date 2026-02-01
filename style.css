@@ -14,6 +14,53 @@ body {
   position: relative;
 }
 
+/* Screen Management */
+.screen {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  overflow-y: auto;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 10;
+}
+
+.screen.active {
+  display: block;
+  opacity: 1;
+}
+
+.screen-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.screen-overlay.active {
+  display: flex;
+  opacity: 1;
+}
+
+/* Main menu should be visible initially */
+#main-menu.active {
+  display: block;
+  opacity: 1;
+}
+
 #particles-container {
   position: fixed;
   top: 0;
@@ -22,45 +69,6 @@ body {
   height: 100%;
   z-index: -1;
   pointer-events: none;
-}
-
-/* Screen Transitions */
-.screen {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  min-height: 100vh;
-  padding: 20px;
-  animation: fadeIn 0.5s ease-out;
-  opacity: 1;
-  transition: opacity 0.3s ease;
-  overflow-y: auto;
-}
-
-.screen.hidden {
-  display: none;
-  opacity: 0;
-}
-
-.screen-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.8);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  padding: 20px;
-  animation: fadeIn 0.3s ease-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
 }
 
 /* Main Menu Styles */
@@ -692,7 +700,7 @@ body {
   border-left: 4px solid #3498db;
 }
 
-.unlock-notification {
+#unlock-notification {
   background: linear-gradient(135deg, #9b59b6, #8e44ad);
   color: white;
   padding: 15px;
@@ -703,6 +711,7 @@ body {
   gap: 10px;
   font-weight: 600;
   animation: pulse 2s infinite;
+  display: none;
 }
 
 @keyframes pulse {
@@ -1274,6 +1283,24 @@ body {
   font-size: 0.9rem;
 }
 
+/* Particle Animations */
+@keyframes float {
+  0% {
+    transform: translateY(0) translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.1;
+  }
+  90% {
+    opacity: 0.1;
+  }
+  100% {
+    transform: translateY(-100vh) translateX(20px);
+    opacity: 0;
+  }
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .game-header h1 {
@@ -1336,6 +1363,10 @@ body {
     gap: 15px;
     text-align: center;
   }
+  
+  .session-stats {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 480px) {
@@ -1363,9 +1394,5 @@ body {
     left: 20px;
     right: 20px;
     max-width: none;
-  }
-  
-  .session-stats {
-    grid-template-columns: 1fr;
   }
 }
