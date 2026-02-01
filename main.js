@@ -25,14 +25,15 @@ let currentScenario = null;
 let scenarioQueue = [];
 
 // Initialize game when DOM is loaded
-document.addEventListener("DOMContentLoaded", () => {
-  // Ensure only main menu is visible
+document.addEventListener("DOMContentLoaded", function() {
+  console.log("Game initializing...");
+  
+  // Hide everything except main menu
   hideAllScreens();
-  document.getElementById("main-menu").classList.remove("hidden");
+  showScreen("main-menu");
   
   initGame();
   updateDisplay();
-  showNotification("Welcome to Wildlife Survival Game!", "Learn animal behavior and test your survival skills.", "info");
   
   // Initialize particles
   initParticles();
@@ -51,13 +52,83 @@ document.addEventListener("DOMContentLoaded", () => {
   if (continentFilter) {
     continentFilter.addEventListener("change", loadAnimalList);
   }
+  
+  console.log("Game initialized successfully");
 });
 
 // Hide all screens
 function hideAllScreens() {
-  document.querySelectorAll(".screen, .screen-overlay").forEach(screen => {
-    screen.classList.add("hidden");
+  const screens = document.querySelectorAll('.screen, .screen-overlay');
+  screens.forEach(screen => {
+    screen.style.display = 'none';
+    screen.classList.remove('active');
   });
+}
+
+// Show screen with transition
+function showScreen(id) {
+  console.log("Showing screen:", id);
+  
+  // Hide all screens first
+  hideAllScreens();
+  
+  // Show target screen
+  const targetScreen = document.getElementById(id);
+  if (targetScreen) {
+    targetScreen.style.display = 'block';
+    setTimeout(() => {
+      targetScreen.classList.add('active');
+    }, 10);
+    
+    // Initialize screen-specific content
+    switch(id) {
+      case "scenario-screen":
+        loadScenario();
+        break;
+      case "info-screen":
+        loadAnimalList();
+        break;
+      case "animal-details-screen":
+        // Already handled by showAnimalDetails
+        break;
+    }
+  }
+}
+
+// Show overlay screen
+function showOverlay(id) {
+  const overlay = document.getElementById(id);
+  if (overlay) {
+    overlay.style.display = 'flex';
+    setTimeout(() => {
+      overlay.classList.add('active');
+    }, 10);
+  }
+}
+
+// Hide overlay screen
+function hideOverlay(id) {
+  const overlay = document.getElementById(id);
+  if (overlay) {
+    overlay.classList.remove('active');
+    setTimeout(() => {
+      overlay.style.display = 'none';
+    }, 300);
+  }
+}
+
+// Back to main menu
+function backToMenu() {
+  console.log("Back to menu");
+  showScreen("main-menu");
+  updateDisplay();
+}
+
+// Special back function from feedback overlay
+function backToMenuFromFeedback() {
+  hideOverlay("feedback-screen");
+  showScreen("main-menu");
+  updateDisplay();
 }
 
 // Initialize game state and UI
@@ -129,62 +200,6 @@ function animateCounter(element, start, end, duration) {
   }, stepTime);
 }
 
-// Show screen with transition
-function showScreen(id) {
-  // Hide all screens
-  hideAllScreens();
-  
-  // Show target screen with delay for transition
-  setTimeout(() => {
-    const targetScreen = document.getElementById(id);
-    if (targetScreen) {
-      targetScreen.classList.remove("hidden");
-    }
-    
-    // Initialize screen-specific content
-    switch(id) {
-      case "scenario-screen":
-        loadScenario();
-        break;
-      case "info-screen":
-        loadAnimalList();
-        break;
-      case "animal-details-screen":
-        // Already handled by showAnimalDetails
-        break;
-    }
-  }, 50);
-}
-
-// Show overlay screen
-function showOverlay(id) {
-  const overlay = document.getElementById(id);
-  if (overlay) {
-    overlay.classList.remove("hidden");
-  }
-}
-
-// Hide overlay screen
-function hideOverlay(id) {
-  const overlay = document.getElementById(id);
-  if (overlay) {
-    overlay.classList.add("hidden");
-  }
-}
-
-// Back to main menu
-function backToMenu() {
-  showScreen("main-menu");
-  updateDisplay();
-}
-
-// Special back function from feedback overlay
-function backToMenuFromFeedback() {
-  hideOverlay("feedback-screen");
-  showScreen("main-menu");
-  updateDisplay();
-}
-
 // Show continent selection screen
 function showContinentSelect() {
   showScreen("continent-screen");
@@ -238,12 +253,15 @@ function startScenario() {
 
 // Load scenario
 function loadScenario() {
+  console.log("Loading scenario...");
+  
   if (scenarioQueue.length === 0) {
     generateScenarioQueue();
   }
   
   // Reset any previous state
   hideOverlay("feedback-screen");
+  document.getElementById("unlock-notification").style.display = "none";
   
   currentScenario = scenarioQueue.shift();
   gameState.gameSession.scenariosPlayed++;
@@ -258,10 +276,10 @@ function loadScenario() {
   // Load image with fallback
   const imgElement = document.getElementById("animal-img");
   const infoImg = new Image();
-  infoImg.onload = () => {
+  infoImg.onload = function() {
     imgElement.src = currentScenario.image;
   };
-  infoImg.onerror = () => {
+  infoImg.onerror = function() {
     imgElement.src = "images/placeholder.png";
   };
   infoImg.src = currentScenario.image;
@@ -285,16 +303,17 @@ function loadScenario() {
       <span class="option-icon">${optionLetters[index]}</span>
       <span class="option-text">${option.text}</span>
     `;
-    button.onclick = () => handleAnswer(option, currentScenario);
+    button.onclick = function() { 
+      handleAnswer(option, currentScenario); 
+    };
     optionsDiv.appendChild(button);
   });
-  
-  // Hide unlock notification
-  document.getElementById("unlock-notification").classList.add("hidden");
 }
 
 // Handle answer selection
 function handleAnswer(selectedOption, scenario) {
+  console.log("Answer selected:", selectedOption.text);
+  
   const options = document.querySelectorAll(".option-btn");
   
   // Disable all options immediately
@@ -339,20 +358,12 @@ function handleAnswer(selectedOption, scenario) {
   
   // Check for unlocks
   checkForUnlocks();
-  
-  // Play sound and particles
-  if (selectedOption.correct) {
-    playSound("correct");
-    createParticles("correct");
-  } else {
-    playSound("incorrect");
-    createParticles("incorrect");
-  }
 }
 
 // Show feedback overlay
 function showFeedbackOverlay(isCorrect, points, explanation) {
-  const overlay = document.getElementById("feedback-screen");
+  console.log("Showing feedback overlay");
+  
   const icon = document.getElementById("feedback-icon");
   const title = document.getElementById("feedback-title");
   const scoreChange = document.getElementById("score-change");
@@ -455,7 +466,7 @@ function checkForUnlocks() {
     const unlockNotification = document.getElementById("unlock-notification");
     const unlockMessage = document.getElementById("unlock-message");
     unlockMessage.textContent = `New animal unlocked: ${unlockedAnimalName}!`;
-    unlockNotification.classList.remove("hidden");
+    unlockNotification.style.display = "flex";
     
     // Show system notification
     showNotification("Animal Unlocked!", `You've unlocked ${unlockedAnimalName}! Check the encyclopedia.`, "success");
@@ -469,6 +480,8 @@ function updateAnimalCount() {
 
 // Load next scenario
 function nextScenario() {
+  console.log("Loading next scenario");
+  
   // Hide feedback overlay
   hideOverlay("feedback-screen");
   
@@ -502,6 +515,8 @@ function showInfo() {
 // Load animal list in encyclopedia
 function loadAnimalList() {
   const listDiv = document.getElementById("animal-list");
+  if (!listDiv) return;
+  
   listDiv.innerHTML = "";
   
   const searchTerm = document.getElementById("animal-search").value.toLowerCase();
@@ -522,7 +537,7 @@ function loadAnimalList() {
     
     const animalItem = document.createElement("div");
     animalItem.className = `animal-item ${isUnlocked ? '' : 'locked'}`;
-    animalItem.onclick = () => showAnimalDetails(animal);
+    animalItem.onclick = function() { showAnimalDetails(animal); };
     
     animalItem.innerHTML = `
       <img src="${animal.image || 'images/placeholder.png'}" alt="${animal.name}" class="animal-item-image">
@@ -570,10 +585,10 @@ function showAnimalDetails(animal) {
   // Set image
   const imgElement = document.getElementById("info-img");
   const infoImg = new Image();
-  infoImg.onload = () => {
+  infoImg.onload = function() {
     imgElement.src = animal.image;
   };
-  infoImg.onerror = () => {
+  infoImg.onerror = function() {
     imgElement.src = "images/placeholder.png";
   };
   infoImg.src = animal.image;
@@ -615,6 +630,8 @@ function showAnimalDetails(animal) {
 // Populate list element
 function populateList(elementId, items) {
   const listElement = document.getElementById(elementId);
+  if (!listElement) return;
+  
   listElement.innerHTML = "";
   
   items.forEach(item => {
@@ -666,6 +683,7 @@ function shareRank() {
 // Show notification
 function showNotification(title, message, type = "info") {
   const container = document.getElementById("notification-container");
+  if (!container) return;
   
   const notification = document.createElement("div");
   notification.className = `notification ${type}`;
@@ -701,18 +719,10 @@ function getNotificationIcon(type) {
   }
 }
 
-// Play sound
-function playSound(type) {
-  if (!gameState.settings.soundEnabled) return;
-  
-  // In a real implementation, you would have audio files
-  // For now, we'll just log
-  console.log(`Playing ${type} sound`);
-}
-
 // Initialize particles
 function initParticles() {
   particlesContainer = document.getElementById("particles-container");
+  if (!particlesContainer) return;
   
   // Create particles
   for (let i = 0; i < 50; i++) {
@@ -748,69 +758,6 @@ function createParticle() {
   particlesContainer.appendChild(particle);
 }
 
-// Create particles for feedback
-function createParticles(type) {
-  if (!gameState.settings.animationsEnabled) return;
-  
-  const color = type === "correct" ? "#2ecc71" : "#e74c3c";
-  
-  for (let i = 0; i < 20; i++) {
-    const particle = document.createElement("div");
-    particle.className = "feedback-particle";
-    
-    // Random properties
-    const size = Math.random() * 8 + 4;
-    const angle = Math.random() * Math.PI * 2;
-    const velocity = Math.random() * 3 + 2;
-    const duration = Math.random() * 1 + 0.5;
-    
-    // Calculate position (center of screen)
-    const startX = window.innerWidth / 2;
-    const startY = window.innerHeight / 2;
-    
-    // Apply styles
-    particle.style.cssText = `
-      position: fixed;
-      width: ${size}px;
-      height: ${size}px;
-      background: ${color};
-      border-radius: 50%;
-      left: ${startX}px;
-      top: ${startY}px;
-      pointer-events: none;
-      z-index: 1000;
-      opacity: 0.8;
-    `;
-    
-    document.body.appendChild(particle);
-    
-    // Animate
-    const endX = startX + Math.cos(angle) * velocity * 100;
-    const endY = startY + Math.sin(angle) * velocity * 100;
-    
-    particle.animate([
-      { 
-        transform: `translate(0, 0) scale(1)`,
-        opacity: 0.8
-      },
-      { 
-        transform: `translate(${endX - startX}px, ${endY - startY}px) scale(0)`,
-        opacity: 0
-      }
-    ], {
-      duration: duration * 1000,
-      easing: 'ease-out'
-    });
-    
-    // Remove after animation
-    setTimeout(() => {
-      if (particle.parentNode) {
-        particle.parentNode.removeChild(particle);
-      }
-    }, duration * 1000);
-  }
-}
-
 // Load settings from localStorage
 function loadSettings() {
   const savedSettings = localStorage.getItem("wildlife_settings");
@@ -823,25 +770,3 @@ function loadSettings() {
 function saveSettings() {
   localStorage.setItem("wildlife_settings", JSON.stringify(gameState.settings));
 }
-
-// Add CSS for particles
-const style = document.createElement('style');
-style.textContent = `
-  @keyframes float {
-    0% {
-      transform: translateY(0) translateX(0);
-      opacity: 0;
-    }
-    10% {
-      opacity: 0.1;
-    }
-    90% {
-      opacity: 0.1;
-    }
-    100% {
-      transform: translateY(-100vh) translateX(20px);
-      opacity: 0;
-    }
-  }
-`;
-document.head.appendChild(style);
