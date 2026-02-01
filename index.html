@@ -22,26 +22,29 @@
         <p class="tagline">Test your knowledge of wildlife behavior in challenging scenarios</p>
       </header>
       
-      <div class="player-stats">
-        <div class="stat-card">
-          <i class="fas fa-trophy"></i>
-          <div>
-            <span class="stat-label">Rank</span>
-            <span id="rank" class="stat-value">Beginner Observer</span>
+      <!-- Combined Stats Panel -->
+      <div class="stats-panel">
+        <div class="stats-grid">
+          <div class="stat-item">
+            <i class="fas fa-trophy"></i>
+            <div>
+              <span class="stat-label">Rank</span>
+              <span id="rank" class="stat-value">Beginner Observer</span>
+            </div>
           </div>
-        </div>
-        <div class="stat-card">
-          <i class="fas fa-star"></i>
-          <div>
-            <span class="stat-label">Score</span>
-            <span id="score" class="stat-value">0</span>
+          <div class="stat-item">
+            <i class="fas fa-star"></i>
+            <div>
+              <span class="stat-label">Score</span>
+              <span id="score" class="stat-value">0</span>
+            </div>
           </div>
-        </div>
-        <div class="stat-card">
-          <i class="fas fa-globe-americas"></i>
-          <div>
-            <span class="stat-label">Animals</span>
-            <span id="animal-count" class="stat-value">1/12</span>
+          <div class="stat-item">
+            <i class="fas fa-globe-americas"></i>
+            <div>
+              <span class="stat-label">Animals</span>
+              <span id="animal-count" class="stat-value">1/12</span>
+            </div>
           </div>
         </div>
       </div>
@@ -201,24 +204,52 @@
         </div>
       </div>
       
-      <div id="feedback" class="feedback-container hidden">
-        <div class="feedback-header">
-          <h3><i class="fas fa-lightbulb"></i> Explanation</h3>
-          <div class="feedback-score-change" id="score-change">+10 points</div>
-        </div>
-        <p id="feedback-text"></p>
-        <div class="unlock-notification hidden" id="unlock-notification">
-          <i class="fas fa-unlock-alt"></i>
-          <span>New animal unlocked!</span>
-        </div>
-        <button id="next-btn" class="btn-next" onclick="nextScenario()">
-          <i class="fas fa-forward"></i> Continue
-        </button>
-      </div>
-      
       <button class="btn-back" onclick="backToMenu()">
         <i class="fas fa-home"></i> Back to Menu
       </button>
+    </div>
+  </div>
+  
+  <!-- Feedback Screen (Overlay) -->
+  <div id="feedback-screen" class="screen-overlay hidden">
+    <div class="feedback-modal">
+      <div class="feedback-header">
+        <div class="feedback-icon" id="feedback-icon">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="feedback-title" id="feedback-title">Correct Answer!</div>
+        <div class="feedback-score-change" id="score-change">+10 points</div>
+      </div>
+      
+      <div class="feedback-content">
+        <h3><i class="fas fa-lightbulb"></i> Explanation</h3>
+        <p id="feedback-text"></p>
+        
+        <div class="unlock-notification hidden" id="unlock-notification">
+          <i class="fas fa-unlock-alt"></i>
+          <span id="unlock-message">New animal unlocked!</span>
+        </div>
+        
+        <div class="session-stats">
+          <div class="stat">
+            <span class="stat-label">Current Streak</span>
+            <span class="stat-value" id="current-streak">0</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Session Accuracy</span>
+            <span class="stat-value" id="session-accuracy">0%</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="feedback-actions">
+        <button class="btn-secondary" onclick="backToMenu()">
+          <i class="fas fa-home"></i> Back to Menu
+        </button>
+        <button class="btn-primary" onclick="nextScenario()">
+          <i class="fas fa-forward"></i> Next Scenario
+        </button>
+      </div>
     </div>
   </div>
   
@@ -247,24 +278,39 @@
         <!-- Animal list will be dynamically added here -->
       </div>
       
-      <div id="animal-details" class="animal-details hidden">
-        <div class="details-header">
-          <button class="btn-back-small" onclick="backToList()">
-            <i class="fas fa-arrow-left"></i> Back
-          </button>
-          <h3 id="info-name">Moose</h3>
-          <span class="detail-continent" id="info-continent">North America</span>
+      <button class="btn-back" onclick="backToMenu()">
+        <i class="fas fa-home"></i> Back to Menu
+      </button>
+    </div>
+  </div>
+  
+  <!-- Animal Details Screen -->
+  <div id="animal-details-screen" class="screen hidden">
+    <div class="screen-container">
+      <div class="details-header">
+        <button class="btn-back-small" onclick="backToAnimalList()">
+          <i class="fas fa-arrow-left"></i> Back
+        </button>
+        <h2 id="info-name">Moose</h2>
+        <span class="detail-continent" id="info-continent">North America</span>
+      </div>
+      
+      <div class="details-content">
+        <div class="details-image-container">
+          <img id="info-img" src="images/placeholder.png" alt="Animal" class="details-image">
+          <div class="details-overlay"></div>
+          <div class="animal-status" id="animal-status">
+            <i class="fas fa-unlock"></i> Unlocked
+          </div>
         </div>
         
-        <div class="details-content">
-          <div class="details-image-container">
-            <img id="info-img" src="images/placeholder.png" alt="Animal" class="details-image">
-            <div class="details-overlay"></div>
+        <div class="details-text">
+          <div class="detail-section">
+            <h3>Description</h3>
+            <p id="info-desc" class="detail-description"></p>
           </div>
           
-          <div class="details-text">
-            <p id="info-desc" class="detail-description"></p>
-            
+          <div class="details-grid">
             <div class="detail-section">
               <h4><i class="fas fa-exclamation-triangle"></i> Signs of Aggression</h4>
               <ul id="info-signs" class="detail-list"></ul>
@@ -279,7 +325,9 @@
               <h4><i class="fas fa-shield-alt"></i> Survival Tips</h4>
               <ul id="info-tips" class="detail-list"></ul>
             </div>
-            
+          </div>
+          
+          <div class="details-grid">
             <div class="detail-section">
               <h4><i class="fas fa-chart-bar"></i> Statistics</h4>
               <div class="stats-grid">
@@ -297,15 +345,26 @@
                   <span class="stat-label">Speed</span>
                   <span class="stat-value" id="info-speed">35 mph</span>
                 </div>
+                <div class="stat-item">
+                  <span class="stat-label">Scientific Name</span>
+                  <span class="stat-value" id="info-scientific-name">Alces alces</span>
+                </div>
               </div>
+            </div>
+            
+            <div class="detail-section">
+              <h4><i class="fas fa-info-circle"></i> Fun Fact</h4>
+              <p id="info-funfact" class="fun-fact"></p>
             </div>
           </div>
         </div>
       </div>
       
-      <button class="btn-back" onclick="backToMenu()">
-        <i class="fas fa-home"></i> Back to Menu
-      </button>
+      <div class="details-actions">
+        <button class="btn-back" onclick="backToAnimalList()">
+          <i class="fas fa-arrow-left"></i> Back to Animal List
+        </button>
+      </div>
     </div>
   </div>
   
@@ -344,9 +403,9 @@
         <h3><i class="fas fa-lightbulb"></i> Pro Tips</h3>
         <ul>
           <li>Use the Animal Encyclopedia to study before playing</li>
-          <li>Points are deducted for using hints</li>
           <li>Unlock animals by reaching certain score thresholds</li>
           <li>Your highest rank is saved locally</li>
+          <li>Read explanations carefully - they contain important survival information</li>
         </ul>
       </div>
       
