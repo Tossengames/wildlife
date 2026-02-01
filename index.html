@@ -14,15 +14,14 @@
   <!-- Particle Container -->
   <div id="particles-container"></div>
   
-  <!-- Main Menu - This should be visible by default -->
-  <div id="main-menu" class="screen">
+  <!-- Main Menu - VISIBLE -->
+  <div id="main-menu" class="screen active">
     <div class="menu-container">
       <header class="game-header">
         <h1><i class="fas fa-paw"></i> Wildlife Survival Game <i class="fas fa-mountain"></i></h1>
         <p class="tagline">Test your knowledge of wildlife behavior in challenging scenarios</p>
       </header>
       
-      <!-- Combined Stats Panel -->
       <div class="stats-panel">
         <div class="stats-grid">
           <div class="stat-item">
@@ -86,8 +85,8 @@
     </div>
   </div>
   
-  <!-- Continent Selection Screen - Hidden by default -->
-  <div id="continent-screen" class="screen hidden">
+  <!-- Continent Selection Screen - HIDDEN -->
+  <div id="continent-screen" class="screen">
     <div class="screen-container">
       <h2><i class="fas fa-globe-americas"></i> Select Continent</h2>
       <p class="screen-subtitle">Choose a continent to focus your wildlife training</p>
@@ -156,8 +155,8 @@
     </div>
   </div>
   
-  <!-- Scenario Screen - Hidden by default -->
-  <div id="scenario-screen" class="screen hidden">
+  <!-- Scenario Screen - HIDDEN -->
+  <div id="scenario-screen" class="screen">
     <div class="screen-container">
       <div class="scenario-header">
         <div class="scenario-progress">
@@ -210,8 +209,8 @@
     </div>
   </div>
   
-  <!-- Feedback Screen (Overlay) - Hidden by default -->
-  <div id="feedback-screen" class="screen-overlay hidden">
+  <!-- Feedback Screen (Overlay) - HIDDEN -->
+  <div id="feedback-screen" class="screen-overlay">
     <div class="feedback-modal">
       <div class="feedback-header">
         <div class="feedback-icon" id="feedback-icon">
@@ -225,7 +224,7 @@
         <h3><i class="fas fa-lightbulb"></i> Explanation</h3>
         <p id="feedback-text"></p>
         
-        <div class="unlock-notification hidden" id="unlock-notification">
+        <div class="unlock-notification" id="unlock-notification">
           <i class="fas fa-unlock-alt"></i>
           <span id="unlock-message">New animal unlocked!</span>
         </div>
@@ -253,8 +252,8 @@
     </div>
   </div>
   
-  <!-- Info Screen (Encyclopedia) - Hidden by default -->
-  <div id="info-screen" class="screen hidden">
+  <!-- Info Screen (Encyclopedia) - HIDDEN -->
+  <div id="info-screen" class="screen">
     <div class="screen-container">
       <h2><i class="fas fa-book-open"></i> Animal Encyclopedia</h2>
       <p class="screen-subtitle">Learn about each animal's behavior, triggers, and survival tips</p>
@@ -284,8 +283,8 @@
     </div>
   </div>
   
-  <!-- Animal Details Screen - Hidden by default -->
-  <div id="animal-details-screen" class="screen hidden">
+  <!-- Animal Details Screen - HIDDEN -->
+  <div id="animal-details-screen" class="screen">
     <div class="screen-container">
       <div class="details-header">
         <button class="btn-back-small" onclick="backToAnimalList()">
@@ -368,8 +367,8 @@
     </div>
   </div>
   
-  <!-- Tutorial Screen - Hidden by default -->
-  <div id="tutorial-screen" class="screen hidden">
+  <!-- Tutorial Screen - HIDDEN -->
+  <div id="tutorial-screen" class="screen">
     <div class="screen-container">
       <h2><i class="fas fa-graduation-cap"></i> How to Play</h2>
       
@@ -421,5 +420,28 @@
   <script src="scenarios.js"></script>
   <script src="animals.js"></script>
   <script src="main.js"></script>
+  
+  <script>
+    // Initialization - Run when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      // Hide all screens except main menu
+      const screens = document.querySelectorAll('.screen, .screen-overlay');
+      screens.forEach(screen => {
+        screen.classList.remove('active');
+        if (screen.id !== 'main-menu') {
+          screen.style.display = 'none';
+        }
+      });
+      
+      // Show main menu
+      document.getElementById('main-menu').classList.add('active');
+      document.getElementById('main-menu').style.display = 'block';
+      
+      // Initialize game
+      if (typeof initGame === 'function') {
+        initGame();
+      }
+    });
+  </script>
 </body>
 </html>
