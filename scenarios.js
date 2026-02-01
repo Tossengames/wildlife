@@ -1,251 +1,171 @@
 const scenarios = [
-  // African Elephant — 4 scenarios
   {
-    animal: "African Elephant",
-    continent: "Africa",
-    image: "",
-    description: "You see an adult African elephant blocking your path, ears extended and trunk raised.",
+    id: 1,
+    animal: "Moose",
+    continent: "North America",
+    image: "images/moose.png",
+    description: "You're hiking in a North American forest when you encounter a large moose. It's staring directly at you with its ears forward, hooves pawing the ground aggressively. Its eyes are wide and focused on your movement.",
     options: [
-      { text: "Wave arms and shout", correct: false },
-      { text: "Back away slowly", correct: true },
-      { text: "Run quickly forward", correct: false }
+      { text: "Run away as quickly as possible", correct: false },
+      { text: "Stand still, avoid eye contact, and slowly back away", correct: true },
+      { text: "Wave your arms and shout to scare it off", correct: false },
+      { text: "Climb the nearest tree immediately", correct: false }
     ],
-    explanation: "Elephants use ear flapping and trunk raising as warning signs. Backing away slowly reduces threat." 
+    explanation: "Moose can charge at speeds up to 35 mph. Running may trigger their chase instinct. Standing still and avoiding eye contact shows you're not a threat. Slowly backing away gives the moose space while maintaining your safety.",
+    difficulty: "medium",
+    unlockScore: 0
   },
   {
-    animal: "African Elephant",
+    id: 2,
+    animal: "Elephant",
     continent: "Africa",
-    image: "",
-    description: "An elephant sprays dust and trumpets loudly after spotting you.",
+    image: "images/elephant.png",
+    description: "During a safari in Africa, you encounter an elephant that's flapping its ears vigorously, trumpeting loudly, and mock-charging by stomping its front feet. It seems agitated by your vehicle's presence.",
     options: [
-      { text: "Hold still and stay quiet", correct: true },
-      { text: "Throw sticks at it", correct: false },
-      { text: "Face it and approach", correct: false }
+      { text: "Back away slowly while keeping the elephant in view", correct: true },
+      { text: "Throw something to distract it", correct: false },
+      { text: "Honk the vehicle horn to assert dominance", correct: false },
+      { text: "Speed away quickly in your vehicle", correct: false }
     ],
-    explanation: "Trumpeting and dusting are warning signs; staying calm and still helps avoid escalation."
+    explanation: "Elephants often give warning signs before actually charging. Backing away slowly shows respect for their space while keeping them in your peripheral vision. Sudden movements or loud noises may escalate the situation.",
+    difficulty: "hard",
+    unlockScore: 10
   },
   {
-    animal: "African Elephant",
-    continent: "Africa",
-    image: "",
-    description: "You accidentally get between an elephant and its calf.",
+    id: 3,
+    animal: "Mountain Lion",
+    continent: "North America",
+    image: "images/mountain-lion.png",
+    description: "While hiking in mountain terrain, you spot a mountain lion watching you from a distance. It's crouched low, tail twitching, and maintaining intense eye contact.",
     options: [
-      { text: "Step aside slowly", correct: true },
-      { text: "Run straight away", correct: false },
-      { text: "Approach them to pet", correct: false }
+      { text: "Make yourself look bigger and maintain eye contact", correct: true },
+      { text: "Turn and run down the trail", correct: false },
+      { text: "Play dead immediately", correct: false },
+      { text: "Approach slowly to show you're friendly", correct: false }
     ],
-    explanation: "Elephants protect calves fiercely. Stepping aside slowly removes threat."
+    explanation: "Mountain lions are ambush predators. Running triggers their chase instinct. Making yourself look bigger (raise arms, open jacket) and maintaining eye contact shows you're not easy prey. Never turn your back or crouch down.",
+    difficulty: "hard",
+    unlockScore: 15
   },
   {
-    animal: "African Elephant",
-    continent: "Africa",
-    image: "",
-    description: "Elephant shows a mock charge—ears out, front foot lifted.",
-    options: [
-      { text: "Stand your ground", correct: false },
-      { text: "Retreat slowly while facing it", correct: true },
-      { text: "Turn and sprint", correct: false }
-    ],
-    explanation: "Mock charges are bluffs, but you should retreat while facing it, not run."
-  },
-
-  // Lion — 4 scenarios
-  {
-    animal: "Lion",
-    continent: "Africa",
-    image: "",
-    description: "A lion is watching you from a distance and growls softly.",
-    options: [
-      { text: "Turn your back and walk away quickly", correct: false },
-      { text: "Stand tall and make noise", correct: true },
-      { text: "Approach slowly to pet", correct: false }
-    ],
-    explanation: "Lions may see you as a threat or prey; making noise while staying large deters approach."
-  },
-  {
-    animal: "Lion",
-    continent: "Africa",
-    image: "",
-    description: "You encounter a lion near a carcass and it stares intently at you.",
-    options: [
-      { text: "Slowly back away without running", correct: true },
-      { text: "Throw stones at it", correct: false },
-      { text: "Creep closer to take photo", correct: false }
-    ],
-    explanation: "Backing away signals you are not a threat without triggering chase."
-  },
-  {
-    animal: "Lion",
-    continent: "Africa",
-    image: "",
-    description: "A lion roars loudly and taked a step toward you.",
-    options: [
-      { text: "Stay calm and widen your stance", correct: true },
-      { text: "Run quickly away", correct: false },
-      { text: "Crouch and hide", correct: false }
-    ],
-    explanation: "Roaring and stepping forward are warning signs; standing tall and backing off is safer."
-  },
-  {
-    animal: "Lion",
-    continent: "Africa",
-    image: "",
-    description: "You see lion cubs near you with adults watching.",
-    options: [
-      { text: "Back away slowly with attention", correct: true },
-      { text: "Run toward them", correct: false },
-      { text: "Throw your bag at them", correct: false }
-    ],
-    explanation: "Protective adults are dangerous; slowly moving away signals non‑ threat." 
-  },
-
-  // Cape Buffalo — 4 scenarios
-  {
-    animal: "Cape Buffalo",
-    continent: "Africa",
-    image: "",
-    description: "A buffalo snorts and lowers its head as you approach.",
-    options: [
-      { text: "Retreat calmly", correct: true },
-      { text: "Yell and wave arms", correct: false },
-      { text: "Throw rocks toward it", correct: false }
-    ],
-    explanation: "Charging posture means retreat calmly to avoid provoking it."
-  },
-  {
-    animal: "Cape Buffalo",
-    continent: "Africa",
-    image: "",
-    description: "You see a buffalo herd blocking your trail.",
-    options: [
-      { text: "Back away and find alternate route", correct: true },
-      { text: "Try to walk through", correct: false },
-      { text: "Stand still near trees", correct: false }
-    ],
-    explanation: "Buffalo can charge unpredictably; backing away is safest."
-  },
-  {
-    animal: "Cape Buffalo",
-    continent: "Africa",
-    image: "",
-    description: "A buffalo snorts loudly and paw at ground.",
-    options: [
-      { text: "Retreat while facing the herd", correct: true },
-      { text: "Turn and sprint", correct: false },
-      { text: "Stand completely still", correct: false }
-    ],
-    explanation: "Pawing ground is aggression; retreat while facing them."
-  },
-  {
-    animal: "Cape Buffalo",
-    continent: "Africa",
-    image: "",
-    description: "A buffalo charges you directly.",
-    options: [
-      { text: "Duck behind large rock if nearby", correct: true },
-      { text: "Wave sticks at it", correct: false },
-      { text: "Jump sideways quickly", correct: false }
-    ],
-    explanation: "Using large cover stops charging unpredictable animals."
-  },
-
-  // Hippopotamus — 4 scenarios
-  {
+    id: 4,
     animal: "Hippopotamus",
     continent: "Africa",
-    image: "",
-    description: "You're near a river and a hippo opens its mouth wide at you.",
+    image: "images/hippo.png",
+    description: "You're on a riverboat in Africa when a hippopotamus surfaces near your boat. It opens its mouth wide, displaying large teeth, and makes loud grunting sounds. The boat is between you and the shore.",
     options: [
-      { text: "Back away slowly", correct: true },
-      { text: "Throw sticks at it", correct: false },
-      { text: "Shout loudly", correct: false }
+      { text: "Remain still and let the boat drift away quietly", correct: true },
+      { text: "Paddle quickly toward the shore", correct: false },
+      { text: "Splash water to scare it away", correct: false },
+      { text: "Stand up and wave your arms", correct: false }
     ],
-    explanation: "A wide open mouth is a warning; retreat quietly."
+    explanation: "Hippos are extremely territorial in water and responsible for more human fatalities in Africa than any other large animal. Sudden movements may be perceived as threats. Staying calm and letting the boat drift away minimizes disturbance.",
+    difficulty: "extreme",
+    unlockScore: 30
   },
   {
-    animal: "Hippopotamus",
-    continent: "Africa",
-    image: "",
-    description: "A hippo splashes toward you from water.",
+    id: 5,
+    animal: "Grizzly Bear",
+    continent: "North America",
+    image: "images/grizzly.png",
+    description: "While camping in grizzly country, you encounter a bear that has noticed you. It's standing on its hind legs, sniffing the air, and making huffing sounds. It's about 50 yards away.",
     options: [
-      { text: "Move farther from water edge", correct: true },
-      { text: "Stand ground", correct: false },
-      { text: "Wave arms wildly", correct: false }
+      { text: "Speak calmly while slowly backing away", correct: true },
+      { text: "Play dead immediately", correct: false },
+      { text: "Run toward the nearest tree", correct: false },
+      { text: "Throw your backpack at it as a distraction", correct: false }
     ],
-    explanation: "Hippos defend water territory; move away."
+    explanation: "A bear standing up is usually curious, not aggressive. Speaking calmly identifies you as human. Slowly backing away gives the bear space. Never run from a bear - they can outrun humans easily. Playing dead is only for actual attacks.",
+    difficulty: "hard",
+    unlockScore: 20
   },
   {
-    animal: "Hippopotamus",
+    id: 6,
+    animal: "Cape Buffalo",
     continent: "Africa",
-    image: "",
-    description: "A hippo snorts and chases your boat.",
+    image: "images/buffalo.png",
+    description: "On an African plain, you accidentally come between a Cape buffalo and its herd. It lowers its head, snorts loudly, and paws the ground aggressively. There's a large tree about 20 feet behind you.",
     options: [
-      { text: "Head toward shore calmly", correct: true },
-      { text: "Row faster toward hippo", correct: false },
-      { text: "Jump out into water", correct: false }
+      { text: "Slowly move toward the tree without turning your back", correct: true },
+      { text: "Stand your ground and stare it down", correct: false },
+      { text: "Run in a zigzag pattern away from it", correct: false },
+      { text: "Make loud noises to scare it", correct: false }
     ],
-    explanation: "Approaching shore signals you mean no threat."
+    explanation: "Cape buffalo are known as one of Africa's most dangerous animals. Putting a solid obstacle like a tree between you and the buffalo can stop a charge. Never run in a straight line or zigzag - they're faster than you. Slow movement is key.",
+    difficulty: "extreme",
+    unlockScore: 40
   },
   {
-    animal: "Hippopotamus",
-    continent: "Africa",
-    image: "",
-    description: "Hippo yawns and shows teeth near water bank.",
+    id: 7,
+    animal: "Rattlesnake",
+    continent: "North America",
+    image: "images/rattlesnake.png",
+    description: "While walking on a desert trail, you hear a distinct rattling sound near your feet. You look down to see a rattlesnake coiled and ready to strike, about 2 feet away.",
     options: [
-      { text: "Back up slowly away", correct: true },
-      { text: "Make loud noises", correct: false },
-      { text: "Approach it", correct: false }
+      { text: "Freeze immediately, then slowly back away", correct: true },
+      { text: "Jump backward quickly", correct: false },
+      { text: "Try to kill it with a nearby rock", correct: false },
+      { text: "Slowly reach down to move it with a stick", correct: false }
     ],
-    explanation: "Yawning and teeth showing are warnings; leave slowly."
-  },
-
-  // Black Rhino — 4 scenarios
-  {
-    animal: "Black Rhino",
-    continent: "Africa",
-    image: "",
-    description: "You come close and the rhino snorts loudly.",
-    options: [
-      { text: "Retreat slowly", correct: true },
-      { text: "Throw rocks", correct: false },
-      { text: "Hide behind bush", correct: false }
-    ],
-    explanation: "Loud snorts are warning; retreat calmly to avoid provoking charge."
+    explanation: "Rattlesnakes can strike up to half their body length. Sudden movements may trigger a strike. Freezing gives you time to assess, then slowly moving out of strike range is safest. Most snake bites occur when people try to handle or kill snakes.",
+    difficulty: "easy",
+    unlockScore: 5
   },
   {
-    animal: "Black Rhino",
+    id: 8,
+    animal: "African Lion",
     continent: "Africa",
-    image: "",
-    description: "Rhino lowers head and starts moving toward you.",
+    image: "images/lion.png",
+    description: "During a walking safari, you encounter a lioness that has separated from her pride. She's crouched low, tail twitching, and staring directly at you. You're with a group but no vehicle is nearby.",
     options: [
-      { text: "Step aside and back away calmly", correct: true },
-      { text: "Stand still", correct: false },
-      { text: "Wave arms", correct: false }
+      { text: "Stand your ground in a group and make noise", correct: true },
+      { text: "Everyone should scatter in different directions", correct: false },
+      { text: "One person should approach to distract it", correct: false },
+      { text: "Climb the nearest tree individually", correct: false }
     ],
-    explanation: "Rhinos react to motion; calm retreat is safer."
+    explanation: "Lions typically avoid groups that appear confident and loud. Staying together makes your group look larger and more formidable. Scattering triggers the predator's instinct to chase the weakest target. Lions can climb trees if motivated.",
+    difficulty: "extreme",
+    unlockScore: 50
   },
   {
-    animal: "Black Rhino",
-    continent: "Africa",
-    image: "",
-    description: "Rhino paws ground and fixes gaze on you.",
+    id: 9,
+    animal: "Alligator",
+    continent: "North America",
+    image: "images/alligator.png",
+    description: "While fishing in Florida wetlands, an alligator approaches your boat. It's swimming directly toward you with only its eyes and nostrils visible above water. The boat is small and unstable.",
     options: [
-      { text: "Retreat slowly while facing it", correct: true },
-      { text: "Run sideways quickly", correct: false },
-      { text: "Approach to look closer", correct: false }
+      { text: "Paddle away calmly without splashing", correct: true },
+      { text: "Splash water to scare it away", correct: false },
+      { text: "Reach out to touch its snout with the paddle", correct: false },
+      { text: "Jump into the water and swim to shore", correct: false }
     ],
-    explanation: "Pawing ground is aggression; retreat while facing reduces uncertainty."
+    explanation: "Alligators are curious but generally avoid humans. Sudden movements or splashing may be interpreted as injured prey. Calm, deliberate paddling shows you're not food. Never enter water with alligators - they're ambush predators.",
+    difficulty: "medium",
+    unlockScore: 10
   },
   {
-    animal: "Black Rhino",
-    continent: "Africa",
-    image: "",
-    description: "Rhino snorts and charges from behind bush.",
+    id: 10,
+    animal: "Wild Boar",
+    continent: "Asia",
+    image: "images/boar.png",
+    description: "While hiking in Asian forests, you encounter a wild boar with piglets. The mother boar charges toward you, tusks visible, making aggressive grunting sounds. There's a large rock formation to your left.",
     options: [
-      { text: "Seek cover behind large rock", correct: true },
-      { text: "Jump forward", correct: false },
-      { text: "Clap loudly", correct: false }
+      { text: "Get to higher ground on the rocks", correct: true },
+      { text: "Run in a straight line away from it", correct: false },
+      { text: "Make yourself look bigger and shout", correct: false },
+      { text: "Play dead immediately", correct: false }
     ],
-    explanation: "Cover blocks charging dangerous animals."
+    explanation: "Mother boars are extremely protective. They can run up to 30 mph. Getting to higher ground puts you out of reach since boars can't climb well. Running triggers chase instinct. Playing dead doesn't work with boars - they may continue attacking.",
+    difficulty: "medium",
+    unlockScore: 15
   }
+];
+
+// Additional scenario sets can be added for more continents
+const asiaScenarios = [
+  // Asian animal scenarios would go here
+];
+
+const europeScenarios = [
+  // European animal scenarios would go here
 ];
