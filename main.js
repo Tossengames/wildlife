@@ -187,7 +187,7 @@ function startScenario() {
   gameState.gameSession.currentStreak = 0;
 }
 
-// Load scenario
+// Load scenario - FIXED: Removed hint functionality
 function loadScenario() {
   if (scenarioQueue.length === 0) {
     generateScenarioQueue();
