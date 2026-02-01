@@ -31,20 +31,9 @@ const userNameDisplay = document.getElementById("userNameDisplay");
 const rankDisplay = document.getElementById("rankDisplay");
 const scoreDisplay = document.getElementById("scoreDisplay");
 
-const pickContinentScreen = document.createElement("div");
-pickContinentScreen.id = "pickContinentScreen";
-pickContinentScreen.className = "screen";
-pickContinentScreen.style.display = "none";
-
-const animalsInfoScreen = document.createElement("div");
-animalsInfoScreen.id = "animalsInfoScreen";
-animalsInfoScreen.className = "screen";
-animalsInfoScreen.style.display = "none";
-
-const animalDetailScreen = document.createElement("div");
-animalDetailScreen.id = "animalDetailScreen";
-animalDetailScreen.className = "screen";
-animalDetailScreen.style.display = "none";
+const pickContinentScreen = document.getElementById("pickContinentScreen");
+const animalsInfoScreen = document.getElementById("animalsInfoScreen");
+const animalDetailScreen = document.getElementById("animalDetailScreen");
 
 const scenarioScreen = document.getElementById("scenarioScreen");
 const animalImage = document.getElementById("animalImage");
@@ -54,15 +43,18 @@ const feedbackScreen = document.getElementById("feedbackScreen");
 const feedbackText = document.getElementById("feedbackText");
 const nextBtn = document.getElementById("nextBtn");
 
+// Buttons
+const pickContinentBtn = document.getElementById("pickContinentBtn");
+const playScenariosBtn = document.getElementById("playScenariosBtn");
+const animalsInfoBtn = document.getElementById("animalsInfoBtn");
+const backFromContinentBtn = document.getElementById("backFromContinent");
+const backFromAnimalsBtn = document.getElementById("backFromAnimals");
+const backFromDetailBtn = document.getElementById("backFromDetail");
+
 // ======= INITIALIZATION =======
 function initGame() {
-  document.body.appendChild(pickContinentScreen);
-  document.body.appendChild(animalsInfoScreen);
-  document.body.appendChild(animalDetailScreen);
-
   const savedProfile = localStorage.getItem("wildSurvivalProfile");
   if(savedProfile) userProfile = JSON.parse(savedProfile);
-
   updateRankDisplay();
   showStartScreen();
 }
@@ -80,7 +72,7 @@ function showStartScreen() {
 
 startButton.addEventListener("click", () => {
   const name = nameInput.value.trim();
-  if(name === "") return alert("Please enter your name!");
+  if(!name) return alert("Please enter your name!");
   userProfile.name = name;
   localStorage.setItem("wildSurvivalProfile", JSON.stringify(userProfile));
   userNameDisplay.textContent = userProfile.name;
@@ -100,78 +92,56 @@ function showMainMenu() {
   updateRankDisplay();
 }
 
-// Main menu buttons
-const pickContinentBtn = document.createElement("button");
-pickContinentBtn.textContent = "Pick Continent";
+// ======= MAIN MENU BUTTON EVENTS =======
 pickContinentBtn.addEventListener("click", showPickContinentScreen);
-
-const playScenariosBtn = document.createElement("button");
-playScenariosBtn.textContent = "Play Scenarios";
-playScenariosBtn.addEventListener("click", () => {
-  loadScenarios();
-  showScenario();
-});
-
-const animalsInfoBtn = document.createElement("button");
-animalsInfoBtn.textContent = "Animals Info";
+playScenariosBtn.addEventListener("click", () => { loadScenarios(); showScenario(); });
 animalsInfoBtn.addEventListener("click", showAnimalsInfoScreen);
-
-mainMenu.appendChild(pickContinentBtn);
-mainMenu.appendChild(playScenariosBtn);
-mainMenu.appendChild(animalsInfoBtn);
 
 // ======= PICK CONTINENT SCREEN =======
 function showPickContinentScreen() {
-  pickContinentScreen.innerHTML = "<h2>Select Continent</h2>";
-  ["All","Africa","North America","Asia","Australia"].forEach(cont => {
-    const btn = document.createElement("button");
-    btn.textContent = cont;
-    btn.addEventListener("click", () => {
-      selectedContinent = cont;
-      showMainMenu();
-      alert(`Selected: ${cont}`);
-    });
-    pickContinentScreen.appendChild(btn);
-  });
   pickContinentScreen.style.display = "flex";
   mainMenu.style.display = "none";
 }
 
+backFromContinentBtn.addEventListener("click", showMainMenu);
+pickContinentScreen.querySelectorAll("button[data-continent]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    selectedContinent = btn.dataset.continent;
+    showMainMenu();
+    alert(`Selected continent: ${selectedContinent}`);
+  });
+});
+
 // ======= ANIMALS INFO SCREEN =======
 function showAnimalsInfoScreen() {
-  animalsInfoScreen.innerHTML = "<h2>Animals Info</h2>";
+  animalsInfoScreen.style.display = "flex";
+  mainMenu.style.display = "none";
+  animalDetailScreen.style.display = "none";
+
+  const animalsList = document.getElementById("animalsList");
+  animalsList.innerHTML = "";
   animalsInfo.forEach(animal => {
     const unlocked = animal.unlocked || userProfile.score >= animal.unlockScore;
     const btn = document.createElement("button");
     btn.textContent = animal.name + (unlocked ? "" : " 🔒");
     btn.disabled = !unlocked;
     btn.addEventListener("click", () => showAnimalDetailScreen(animal));
-    animalsInfoScreen.appendChild(btn);
+    animalsList.appendChild(btn);
   });
-  const backBtn = document.createElement("button");
-  backBtn.textContent = "Back to Menu";
-  backBtn.addEventListener("click", showMainMenu);
-  animalsInfoScreen.appendChild(backBtn);
-
-  animalsInfoScreen.style.display = "flex";
-  mainMenu.style.display = "none";
 }
+
+backFromAnimalsBtn.addEventListener("click", showMainMenu);
 
 // ======= ANIMAL DETAIL SCREEN =======
 function showAnimalDetailScreen(animal) {
-  animalDetailScreen.innerHTML = `<h2>${animal.name}</h2>
-  <img src="${animal.image || 'https://via.placeholder.com/300x200?text=No+Image'}" 
-       class="animalImage">
-  <p>${animal.info || "No info available"}</p>`;
-
-  const backBtn = document.createElement("button");
-  backBtn.textContent = "Back to Animals";
-  backBtn.addEventListener("click", showAnimalsInfoScreen);
-  animalDetailScreen.appendChild(backBtn);
-
   animalDetailScreen.style.display = "flex";
   animalsInfoScreen.style.display = "none";
+  document.getElementById("animalName").textContent = animal.name;
+  document.getElementById("animalDetailImage").src = animal.image || "https://via.placeholder.com/300x200?text=No+Image";
+  document.getElementById("animalInfo").textContent = animal.info || "No info available";
 }
+
+backFromDetailBtn.addEventListener("click", showAnimalsInfoScreen);
 
 // ======= SCENARIO FLOW =======
 function loadScenarios() {
@@ -203,7 +173,6 @@ function showScenario() {
 
   scenarioDescription.textContent = scenario.description;
 
-  // Options
   optionsContainer.innerHTML = "";
   scenario.options.forEach((opt, idx) => {
     const btn = document.createElement("button");
@@ -222,7 +191,6 @@ function showScenario() {
   nextBtn.style.display = "none";
 }
 
-// Handle option selection
 function handleOptionSelect(optionIndex) {
   const scenario = currentScenarioList[currentScenarioIndex];
   const selectedOption = scenario.options[optionIndex];
@@ -243,7 +211,6 @@ function handleOptionSelect(optionIndex) {
   nextBtn.style.display = "inline-block";
 }
 
-// Next scenario
 nextBtn.addEventListener("click", () => {
   currentScenarioIndex += 1;
   nextBtn.style.display = "none";
@@ -262,7 +229,6 @@ function updateRankDisplay() {
   scoreDisplay.textContent = `Score: ${userProfile.score}`;
 }
 
-// Unlock animals
 function checkAnimalUnlocks() {
   animalsInfo.forEach(animal => {
     if(!animal.unlocked && userProfile.score >= animal.unlockScore) {
