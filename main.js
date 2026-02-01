@@ -35,6 +35,10 @@ document.addEventListener("DOMContentLoaded", () => {
   
   // Load settings from localStorage
   loadSettings();
+  
+  // Add event listeners
+  document.getElementById("animal-search").addEventListener("input", loadAnimalList);
+  document.getElementById("continent-filter").addEventListener("change", loadAnimalList);
 });
 
 // Initialize game state and UI
@@ -126,14 +130,31 @@ function showScreen(id) {
       case "info-screen":
         loadAnimalList();
         break;
+      case "animal-details-screen":
+        // Already handled by showAnimalDetails
+        break;
     }
   }, 50);
+}
+
+// Show overlay screen
+function showOverlay(id) {
+  const overlay = document.getElementById(id);
+  overlay.classList.remove("hidden");
+}
+
+// Hide overlay screen
+function hideOverlay(id) {
+  const overlay = document.getElementById(id);
+  overlay.classList.add("hidden");
 }
 
 // Back to main menu
 function backToMenu() {
   showScreen("main-menu");
   updateDisplay();
+  // Hide feedback overlay if open
+  hideOverlay("feedback-screen");
 }
 
 // Show continent selection screen
@@ -187,7 +208,7 @@ function startScenario() {
   gameState.gameSession.currentStreak = 0;
 }
 
-// Load scenario - FIXED: Removed hint functionality
+// Load scenario
 function loadScenario() {
   if (scenarioQueue.length === 0) {
     generateScenarioQueue();
@@ -237,24 +258,18 @@ function loadScenario() {
     optionsDiv.appendChild(button);
   });
   
-  // Reset feedback
-  document.getElementById("feedback").classList.add("hidden");
-  document.getElementById("feedback-text").textContent = "";
-  document.getElementById("score-change").textContent = "";
-  document.getElementById("unlock-notification").classList.add("hidden");
+  // Hide feedback overlay
+  hideOverlay("feedback-screen");
 }
 
 // Handle answer selection
 function handleAnswer(selectedOption, scenario) {
   const options = document.querySelectorAll(".option-btn");
-  const feedbackDiv = document.getElementById("feedback");
-  const feedbackText = document.getElementById("feedback-text");
-  const scoreChange = document.getElementById("score-change");
   
-  // Disable all options
+  // Disable all options immediately
   options.forEach(opt => {
     opt.disabled = true;
-    opt.style.cursor = "default";
+    opt.style.cursor = "not-allowed";
   });
   
   // Mark correct/incorrect answers
@@ -269,12 +284,10 @@ function handleAnswer(selectedOption, scenario) {
     }
   });
   
-  // Show feedback
-  feedbackDiv.classList.remove("hidden");
+  // Calculate results
+  const pointsEarned = selectedOption.correct ? 10 + (gameState.gameSession.currentStreak * 2) : 0;
   
   if (selectedOption.correct) {
-    // Correct answer
-    const pointsEarned = 10 + (gameState.gameSession.currentStreak * 2);
     gameState.userScore += pointsEarned;
     gameState.gameSession.correctAnswers++;
     gameState.gameSession.currentStreak++;
@@ -282,40 +295,63 @@ function handleAnswer(selectedOption, scenario) {
     if (gameState.gameSession.currentStreak > gameState.gameSession.bestStreak) {
       gameState.gameSession.bestStreak = gameState.gameSession.currentStreak;
       localStorage.setItem("wildlife_best_streak", gameState.gameSession.bestStreak);
-      showNotification("New Best Streak!", `You've answered ${gameState.gameSession.bestStreak} questions correctly in a row!`, "success");
     }
-    
-    feedbackText.innerHTML = `✅ <strong>Correct!</strong> ${scenario.explanation}`;
-    scoreChange.textContent = `+${pointsEarned} points`;
-    scoreChange.style.background = "linear-gradient(135deg, #2ecc71, #27ae60)";
-    
-    // Play success sound
-    playSound("correct");
-    
-    // Show particle effect
-    createParticles("correct");
   } else {
-    // Incorrect answer
     gameState.gameSession.currentStreak = 0;
-    feedbackText.innerHTML = `❌ <strong>Incorrect.</strong> ${scenario.explanation}`;
-    scoreChange.textContent = `+0 points`;
-    scoreChange.style.background = "linear-gradient(135deg, #e74c3c, #c0392b)";
-    
-    // Play error sound
-    playSound("incorrect");
-    
-    // Show particle effect
-    createParticles("incorrect");
   }
   
   // Update game state
   updateGameState();
   
+  // Show feedback overlay
+  showFeedbackOverlay(selectedOption.correct, pointsEarned, scenario.explanation);
+  
   // Check for unlocks
   checkForUnlocks();
   
-  // Show next button
-  document.getElementById("next-btn").style.display = "block";
+  // Play sound and particles
+  if (selectedOption.correct) {
+    playSound("correct");
+    createParticles("correct");
+  } else {
+    playSound("incorrect");
+    createParticles("incorrect");
+  }
+}
+
+// Show feedback overlay
+function showFeedbackOverlay(isCorrect, points, explanation) {
+  const overlay = document.getElementById("feedback-screen");
+  const icon = document.getElementById("feedback-icon");
+  const title = document.getElementById("feedback-title");
+  const scoreChange = document.getElementById("score-change");
+  const feedbackText = document.getElementById("feedback-text");
+  const currentStreak = document.getElementById("current-streak");
+  const sessionAccuracy = document.getElementById("session-accuracy");
+  
+  // Set feedback content
+  if (isCorrect) {
+    icon.innerHTML = '<i class="fas fa-check-circle"></i>';
+    title.textContent = "Correct Answer!";
+    scoreChange.textContent = `+${points} points`;
+    scoreChange.style.background = "linear-gradient(135deg, #2ecc71, #27ae60)";
+  } else {
+    icon.innerHTML = '<i class="fas fa-times-circle"></i>';
+    title.textContent = "Incorrect Answer";
+    scoreChange.textContent = "+0 points";
+    scoreChange.style.background = "linear-gradient(135deg, #e74c3c, #c0392b)";
+  }
+  
+  feedbackText.textContent = explanation;
+  currentStreak.textContent = gameState.gameSession.currentStreak;
+  
+  // Calculate session accuracy
+  const accuracy = gameState.gameSession.scenariosPlayed > 0 ? 
+    Math.round((gameState.gameSession.correctAnswers / gameState.gameSession.scenariosPlayed) * 100) : 0;
+  sessionAccuracy.textContent = `${accuracy}%`;
+  
+  // Show overlay
+  showOverlay("feedback-screen");
 }
 
 // Update game state and localStorage
@@ -363,19 +399,16 @@ function updateRank() {
 
 // Check for animal unlocks
 function checkForUnlocks() {
+  let unlockedNewAnimal = false;
+  let unlockedAnimalName = "";
+  
   animalsInfo.forEach(animal => {
     if (!gameState.unlockedAnimals.includes(animal.name)) {
       // Unlock based on score thresholds
       if (gameState.userScore >= animal.unlockScore) {
         gameState.unlockedAnimals.push(animal.name);
-        
-        // Show unlock notification
-        const unlockNotification = document.getElementById("unlock-notification");
-        unlockNotification.querySelector("span").textContent = `New animal unlocked: ${animal.name}!`;
-        unlockNotification.classList.remove("hidden");
-        
-        // Show system notification
-        showNotification("Animal Unlocked!", `You've unlocked ${animal.name}! Check the encyclopedia.`, "success");
+        unlockedNewAnimal = true;
+        unlockedAnimalName = animal.name;
         
         // Save to localStorage
         localStorage.setItem("wildlife_unlocked", JSON.stringify(gameState.unlockedAnimals));
@@ -385,6 +418,17 @@ function checkForUnlocks() {
       }
     }
   });
+  
+  // Show unlock notification in feedback overlay
+  if (unlockedNewAnimal) {
+    const unlockNotification = document.getElementById("unlock-notification");
+    const unlockMessage = document.getElementById("unlock-message");
+    unlockMessage.textContent = `New animal unlocked: ${unlockedAnimalName}!`;
+    unlockNotification.classList.remove("hidden");
+    
+    // Show system notification
+    showNotification("Animal Unlocked!", `You've unlocked ${unlockedAnimalName}! Check the encyclopedia.`, "success");
+  }
 }
 
 // Update animal count display
@@ -394,6 +438,9 @@ function updateAnimalCount() {
 
 // Load next scenario
 function nextScenario() {
+  // Hide feedback overlay
+  hideOverlay("feedback-screen");
+  
   if (scenarioQueue.length === 0 || gameState.gameSession.scenariosPlayed >= 10) {
     // End of session
     showSessionSummary();
@@ -404,10 +451,11 @@ function nextScenario() {
 
 // Show session summary
 function showSessionSummary() {
-  const accuracy = (gameState.gameSession.correctAnswers / gameState.gameSession.scenariosPlayed) * 100;
+  const accuracy = gameState.gameSession.scenariosPlayed > 0 ? 
+    Math.round((gameState.gameSession.correctAnswers / gameState.gameSession.scenariosPlayed) * 100) : 0;
   
   showNotification("Session Complete!", 
-    `Accuracy: ${accuracy.toFixed(1)}% | Score: +${gameState.userScore} | Best Streak: ${gameState.gameSession.bestStreak}`, 
+    `Accuracy: ${accuracy}% | Score: +${gameState.userScore} | Best Streak: ${gameState.gameSession.bestStreak}`, 
     "info");
   
   // Return to menu
@@ -461,7 +509,7 @@ function loadAnimalList() {
   });
 }
 
-// Show animal details
+// Show animal details in separate screen
 function showAnimalDetails(animal) {
   const isUnlocked = gameState.unlockedAnimals.includes(animal.name);
   
@@ -470,13 +518,23 @@ function showAnimalDetails(animal) {
     return;
   }
   
-  document.getElementById("animal-list").classList.add("hidden");
-  document.getElementById("animal-details").classList.remove("hidden");
+  // Switch to animal details screen
+  showScreen("animal-details-screen");
   
   // Populate details
   document.getElementById("info-name").textContent = animal.name;
   document.getElementById("info-continent").textContent = animal.continent;
   document.getElementById("info-desc").textContent = animal.description;
+  
+  // Set animal status
+  const statusElement = document.getElementById("animal-status");
+  if (isUnlocked) {
+    statusElement.innerHTML = '<i class="fas fa-unlock"></i> Unlocked';
+    statusElement.className = "animal-status";
+  } else {
+    statusElement.innerHTML = '<i class="fas fa-lock"></i> Locked';
+    statusElement.className = "animal-status locked";
+  }
   
   // Set image
   const imgElement = document.getElementById("info-img");
@@ -503,6 +561,14 @@ function showAnimalDetails(animal) {
     document.getElementById("info-speed").textContent = animal.speed;
   }
   
+  if (animal.scientificName) {
+    document.getElementById("info-scientific-name").textContent = animal.scientificName;
+  }
+  
+  if (animal.funFact) {
+    document.getElementById("info-funfact").textContent = animal.funFact;
+  }
+  
   // Set danger level bar
   const dangerLevels = {
     "Low": 25,
@@ -527,10 +593,10 @@ function populateList(elementId, items) {
   });
 }
 
-// Back to animal list
-function backToList() {
-  document.getElementById("animal-details").classList.add("hidden");
-  document.getElementById("animal-list").classList.remove("hidden");
+// Back to animal list from details screen
+function backToAnimalList() {
+  showScreen("info-screen");
+  loadAnimalList();
 }
 
 // Show tutorial
@@ -726,20 +792,6 @@ function loadSettings() {
 function saveSettings() {
   localStorage.setItem("wildlife_settings", JSON.stringify(gameState.settings));
 }
-
-// Event listeners for search and filter
-document.addEventListener("DOMContentLoaded", () => {
-  const animalSearch = document.getElementById("animal-search");
-  const continentFilter = document.getElementById("continent-filter");
-  
-  if (animalSearch) {
-    animalSearch.addEventListener("input", loadAnimalList);
-  }
-  
-  if (continentFilter) {
-    continentFilter.addEventListener("change", loadAnimalList);
-  }
-});
 
 // Add CSS for particles
 const style = document.createElement('style');
