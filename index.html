@@ -1,51 +1,75 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wildlife Survival Game</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wildlife Survival: Ranger Edition</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&family=Caprasimo&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div id="main-menu" class="screen">
-    <h1>🦁 Wildlife Survival Game 🐘</h1>
-    <button onclick="startScenario()">Play Scenarios</button>
-    <button onclick="pickContinent()">Pick Continent</button>
-    <button onclick="showInfo()">Animal Info</button>
-    <button onclick="shareRank()">Share My Rank</button>
-    <a href="https://ko-fi.com/yourusername" target="_blank">
-      <button>Support / Ko-fi</button>
-    </a>
-    <p id="rank">Rank: Beginner Observer</p>
-  </div>
+    <div id="game-container">
+        <div id="toast-container"></div>
 
-  <div id="scenario-screen" class="screen hidden">
-    <h2 id="animal-name"></h2>
-    <img id="animal-img" src="images/placeholder.png" alt="Animal">
-    <p id="animal-desc"></p>
-    <div id="options"></div>
-    <p id="feedback"></p>
-    <button id="next-btn" onclick="nextScenario()">Next</button>
-    <button onclick="backToMenu()">Back to Menu</button>
-  </div>
+        <section id="main-menu" class="screen active">
+            <div class="logo-area">
+                <span class="emoji-hero">🦁</span>
+                <h1>WILDLIFE <br><span class="highlight">SURVIVAL</span></h1>
+            </div>
+            
+            <div class="stats-bar">
+                <p id="rank-display">Rank: <span>Beginner Observer</span></p>
+                <div class="progress-container"><div id="rank-progress" class="progress-bar"></div></div>
+            </div>
 
-  <div id="info-screen" class="screen hidden">
-    <h2>Animal Encyclopedia</h2>
-    <div id="animal-list"></div>
-    <div id="animal-details" class="hidden">
-      <h3 id="info-name"></h3>
-      <img id="info-img" src="images/placeholder.png" alt="Animal">
-      <p id="info-desc"></p>
-      <p><b>Signs of Aggression:</b> <span id="info-signs"></span></p>
-      <p><b>Triggers:</b> <span id="info-triggers"></span></p>
-      <p><b>Survival Tips:</b> <span id="info-tips"></span></p>
-      <button onclick="backToList()">Back</button>
+            <nav class="menu-nav">
+                <button class="btn-primary" onclick="startScenario()">Start Patrol</button>
+                <button class="btn-secondary" onclick="openContinentSelect()">Select Region</button>
+                <button class="btn-secondary" onclick="showInfo()">Encyclopedia</button>
+                <button class="btn-ghost" onclick="shareRank()">Share Progress</button>
+            </nav>
+        </section>
+
+        <section id="scenario-screen" class="screen">
+            <div class="game-header">
+                <button class="btn-back" onclick="backToMenu()">← Exit</button>
+                <div id="score-tag">Score: 0</div>
+            </div>
+            
+            <div class="card">
+                <div class="image-wrapper">
+                    <img id="animal-img" src="images/placeholder.png" alt="Animal">
+                </div>
+                <h2 id="animal-name">Loading...</h2>
+                <p id="animal-desc"></p>
+            </div>
+
+            <div id="options" class="options-grid"></div>
+
+            <div id="feedback-panel" class="hidden">
+                <div class="feedback-content">
+                    <h3 id="feedback-title"></h3>
+                    <p id="feedback-text"></p>
+                    <button class="btn-next" id="next-btn" onclick="nextScenario()">Continue Patrol</button>
+                </div>
+            </div>
+        </section>
+
+        <div id="modal-overlay" class="modal hidden">
+            <div class="modal-content">
+                <h3>Select Region</h3>
+                <div id="continent-list">
+                    <button onclick="setContinent('Africa')">Africa 🐘</button>
+                    <button onclick="setContinent('North America')">North America 🌲</button>
+                    <button onclick="setContinent(null)">All Regions 🌍</button>
+                </div>
+                <button class="btn-close" onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
     </div>
-    <button onclick="backToMenu()">Back to Menu</button>
-  </div>
 
-  <script src="scenarios.js"></script>
-  <script src="animals.js"></script>
-  <script src="main.js"></script>
+    <script src="scenarios.js"></script>
+    <script src="animals.js"></script>
+    <script src="main.js"></script>
 </body>
 </html>
