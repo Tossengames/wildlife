@@ -5,7 +5,7 @@ let gameState = {
   highScore: parseInt(localStorage.getItem("wildlife_highscore")) || 0,
   currentContinent: null,
   completedScenarios: JSON.parse(localStorage.getItem("wildlife_completed")) || [],
-  unlockedAnimals: JSON.parse(localStorage.getItem("wildlife_unlocked")) || ["Moose", "Elephant"],
+  unlockedAnimals: JSON.parse(localStorage.getItem("wildlife_unlocked")) || ["Moose"],
   gameSession: {
     scenariosPlayed: 0,
     correctAnswers: 0,
@@ -26,6 +26,10 @@ let scenarioQueue = [];
 
 // Initialize game when DOM is loaded
 document.addEventListener("DOMContentLoaded", () => {
+  // Ensure only main menu is visible
+  hideAllScreens();
+  document.getElementById("main-menu").classList.remove("hidden");
+  
   initGame();
   updateDisplay();
   showNotification("Welcome to Wildlife Survival Game!", "Learn animal behavior and test your survival skills.", "info");
@@ -37,9 +41,24 @@ document.addEventListener("DOMContentLoaded", () => {
   loadSettings();
   
   // Add event listeners
-  document.getElementById("animal-search").addEventListener("input", loadAnimalList);
-  document.getElementById("continent-filter").addEventListener("change", loadAnimalList);
+  const animalSearch = document.getElementById("animal-search");
+  const continentFilter = document.getElementById("continent-filter");
+  
+  if (animalSearch) {
+    animalSearch.addEventListener("input", loadAnimalList);
+  }
+  
+  if (continentFilter) {
+    continentFilter.addEventListener("change", loadAnimalList);
+  }
 });
+
+// Hide all screens
+function hideAllScreens() {
+  document.querySelectorAll(".screen, .screen-overlay").forEach(screen => {
+    screen.classList.add("hidden");
+  });
+}
 
 // Initialize game state and UI
 function initGame() {
@@ -113,14 +132,14 @@ function animateCounter(element, start, end, duration) {
 // Show screen with transition
 function showScreen(id) {
   // Hide all screens
-  document.querySelectorAll(".screen").forEach(screen => {
-    screen.classList.add("hidden");
-  });
+  hideAllScreens();
   
   // Show target screen with delay for transition
   setTimeout(() => {
     const targetScreen = document.getElementById(id);
-    targetScreen.classList.remove("hidden");
+    if (targetScreen) {
+      targetScreen.classList.remove("hidden");
+    }
     
     // Initialize screen-specific content
     switch(id) {
@@ -140,21 +159,30 @@ function showScreen(id) {
 // Show overlay screen
 function showOverlay(id) {
   const overlay = document.getElementById(id);
-  overlay.classList.remove("hidden");
+  if (overlay) {
+    overlay.classList.remove("hidden");
+  }
 }
 
 // Hide overlay screen
 function hideOverlay(id) {
   const overlay = document.getElementById(id);
-  overlay.classList.add("hidden");
+  if (overlay) {
+    overlay.classList.add("hidden");
+  }
 }
 
 // Back to main menu
 function backToMenu() {
   showScreen("main-menu");
   updateDisplay();
-  // Hide feedback overlay if open
+}
+
+// Special back function from feedback overlay
+function backToMenuFromFeedback() {
   hideOverlay("feedback-screen");
+  showScreen("main-menu");
+  updateDisplay();
 }
 
 // Show continent selection screen
@@ -214,6 +242,9 @@ function loadScenario() {
     generateScenarioQueue();
   }
   
+  // Reset any previous state
+  hideOverlay("feedback-screen");
+  
   currentScenario = scenarioQueue.shift();
   gameState.gameSession.scenariosPlayed++;
   
@@ -258,8 +289,8 @@ function loadScenario() {
     optionsDiv.appendChild(button);
   });
   
-  // Hide feedback overlay
-  hideOverlay("feedback-screen");
+  // Hide unlock notification
+  document.getElementById("unlock-notification").classList.add("hidden");
 }
 
 // Handle answer selection
