@@ -1,76 +1,101 @@
-:root {
-  --bg: #f4f6f3;
-  --card: #ffffff;
-  --primary: #2f5d50;
-  --secondary: #8faea3;
-  --accent: #d4a373;
-  --danger: #c44536;
-  --text: #243333;
-  --muted: #6b7c78;
-  --shadow: 0 8px 24px rgba(0,0,0,0.08);
+/* ===== GLOBAL ===== */
+body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(to bottom, #a8edea, #fed6e3);
+  color: #333;
 }
 
-body {
-  margin:0;
-  font-family: Arial, sans-serif;
-  background: var(--bg);
-  color: var(--text);
+.screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
   text-align: center;
 }
 
-.screen { max-width:720px; margin:auto; padding:20px; }
-.hidden { display:none; }
-
-.card {
-  background: var(--card);
-  border-radius:16px;
-  padding:20px;
-  margin-bottom:20px;
-  box-shadow: var(--shadow);
+h1, h2, h3 {
+  margin: 10px 0;
 }
 
-h1{color:var(--primary); font-size:2rem;margin-bottom:10px;}
-h2{font-size:1.5rem;margin-bottom:10px;}
-h3{margin-top:0;}
-
-input{
-  width:80%;
-  padding:12px;
-  margin:10px 0;
-  border-radius:10px;
-  border:1px solid #ccc;
-  font-size:1rem;
+/* ===== BUTTONS ===== */
+button {
+  padding: 12px 24px;
+  margin: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+  background-color: #4caf50;
+  color: white;
 }
 
-button{
-  width:100%;
-  padding:14px;
-  margin:8px 0;
-  border-radius:12px;
-  border:none;
-  cursor:pointer;
-  background: var(--primary);
-  color:#fff;
-  font-weight:600;
-  font-size:1rem;
-}
-button:hover{background:#244a40;}
-button.accent{background:var(--accent); color:#3a2a14;}
-button.danger{background:var(--danger);}
-
-img{
-  width:100%;
-  max-height:260px;
-  object-fit:contain;
-  border-radius:12px;
-  margin:10px 0;
-  background:#eef1ef;
+button:hover {
+  background-color: #45a049;
 }
 
-#animal-desc{font-size:1.05rem; margin:15px 0;}
-#feedback{margin-top:15px; padding:12px; border-radius:10px; font-weight:600;}
-#feedback.correct{background:#e6f4ea; color:#1e6b3a;}
-#feedback.wrong{background:#fdecea; color:#8a1c14;}
-#rank{margin-top:10px; font-weight:700; color:var(--accent);}
-#progress{margin-bottom:15px;}
-#animal-list button{text-align:left;}
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* ===== INPUT ===== */
+input[type="text"] {
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 10px;
+  border: 1px solid #888;
+  margin: 10px 0;
+}
+
+/* ===== ANIMAL IMAGE ===== */
+.animalImage {
+  max-width: 90%;
+  height: auto;
+  border-radius: 15px;
+  margin: 15px 0;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+/* ===== OPTIONS ===== */
+.optionsContainer {
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  max-width: 500px;
+  margin-top: 10px;
+}
+
+.optionBtn {
+  background-color: #2196f3;
+  margin: 5px 0;
+}
+
+.optionBtn:hover {
+  background-color: #1976d2;
+}
+
+/* ===== RANK & SCORE ===== */
+.rankScore {
+  margin: 10px 0;
+  font-weight: bold;
+}
+
+/* ===== MENU BUTTONS ===== */
+.menuButtons {
+  margin: 15px 0;
+}
+
+/* ===== FEEDBACK SCREEN ===== */
+#feedbackScreen p {
+  font-size: 18px;
+  padding: 15px;
+  background-color: rgba(255,255,255,0.8);
+  border-radius: 15px;
+  max-width: 90%;
+  margin-bottom: 20px;
+}
