@@ -33,6 +33,15 @@ h1{color:var(--primary); font-size:2rem;margin-bottom:10px;}
 h2{font-size:1.5rem;margin-bottom:10px;}
 h3{margin-top:0;}
 
+input{
+  width:80%;
+  padding:12px;
+  margin:10px 0;
+  border-radius:10px;
+  border:1px solid #ccc;
+  font-size:1rem;
+}
+
 button{
   width:100%;
   padding:14px;
@@ -62,5 +71,6 @@ img{
 #feedback{margin-top:15px; padding:12px; border-radius:10px; font-weight:600;}
 #feedback.correct{background:#e6f4ea; color:#1e6b3a;}
 #feedback.wrong{background:#fdecea; color:#8a1c14;}
-#rank{margin-top:15px; font-weight:700; color:var(--accent);}
+#rank{margin-top:10px; font-weight:700; color:var(--accent);}
+#progress{margin-bottom:15px;}
 #animal-list button{text-align:left;}
