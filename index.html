@@ -14,7 +14,7 @@
   <!-- Particle Container -->
   <div id="particles-container"></div>
   
-  <!-- Main Menu -->
+  <!-- Main Menu - This should be visible by default -->
   <div id="main-menu" class="screen">
     <div class="menu-container">
       <header class="game-header">
@@ -86,7 +86,7 @@
     </div>
   </div>
   
-  <!-- Continent Selection Screen -->
+  <!-- Continent Selection Screen - Hidden by default -->
   <div id="continent-screen" class="screen hidden">
     <div class="screen-container">
       <h2><i class="fas fa-globe-americas"></i> Select Continent</h2>
@@ -156,7 +156,7 @@
     </div>
   </div>
   
-  <!-- Scenario Screen -->
+  <!-- Scenario Screen - Hidden by default -->
   <div id="scenario-screen" class="screen hidden">
     <div class="screen-container">
       <div class="scenario-header">
@@ -210,7 +210,7 @@
     </div>
   </div>
   
-  <!-- Feedback Screen (Overlay) -->
+  <!-- Feedback Screen (Overlay) - Hidden by default -->
   <div id="feedback-screen" class="screen-overlay hidden">
     <div class="feedback-modal">
       <div class="feedback-header">
@@ -243,7 +243,7 @@
       </div>
       
       <div class="feedback-actions">
-        <button class="btn-secondary" onclick="backToMenu()">
+        <button class="btn-secondary" onclick="backToMenuFromFeedback()">
           <i class="fas fa-home"></i> Back to Menu
         </button>
         <button class="btn-primary" onclick="nextScenario()">
@@ -253,7 +253,7 @@
     </div>
   </div>
   
-  <!-- Info Screen (Encyclopedia) -->
+  <!-- Info Screen (Encyclopedia) - Hidden by default -->
   <div id="info-screen" class="screen hidden">
     <div class="screen-container">
       <h2><i class="fas fa-book-open"></i> Animal Encyclopedia</h2>
@@ -284,7 +284,7 @@
     </div>
   </div>
   
-  <!-- Animal Details Screen -->
+  <!-- Animal Details Screen - Hidden by default -->
   <div id="animal-details-screen" class="screen hidden">
     <div class="screen-container">
       <div class="details-header">
@@ -368,7 +368,7 @@
     </div>
   </div>
   
-  <!-- Tutorial Screen -->
+  <!-- Tutorial Screen - Hidden by default -->
   <div id="tutorial-screen" class="screen hidden">
     <div class="screen-container">
       <h2><i class="fas fa-graduation-cap"></i> How to Play</h2>
