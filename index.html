@@ -3,76 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wildlife Survival: Ranger Edition</title>
+    <title>Wildlife Survival Pro</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Caprasimo&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&family=Caprasimo&display=swap" rel="stylesheet">
 </head>
 <body>
     <div id="game-container">
         <div id="toast-container"></div>
 
-        <section id="main-menu" class="screen active">
-            <div class="logo-area">
-                <div class="main-emoji">🦁</div>
-                <h1>WILDLIFE<br><span class="accent-text">SURVIVAL</span></h1>
+        <div id="main-menu" class="screen active">
+            <div class="header-section">
+                <div class="logo-emoji">🦁</div>
+                <h1>WILDLIFE <span class="green">SURVIVAL</span></h1>
+                <p id="rank-text" class="rank-badge">Rank: Beginner Observer</p>
+            </div>
+
+            <div class="menu-grid">
+                <button class="btn-primary" onclick="startScenario()">PLAY SCENARIOS</button>
+                <button class="btn-secondary" onclick="openModal('continent-modal')">PICK CONTINENT</button>
+                <button class="btn-secondary" onclick="showInfo()">ANIMAL INFO</button>
+                <button class="btn-share" onclick="shareRank()">SHARE MY RANK</button>
+                <a href="https://ko-fi.com/yourusername" target="_blank" class="kofi-link">
+                    <button class="btn-kofi">☕ SUPPORT / KO-FI</button>
+                </a>
+            </div>
+        </div>
+
+        <div id="scenario-screen" class="screen">
+            <div class="nav-header">
+                <button class="back-link" onclick="backToMenu()">← MENU</button>
+                <div id="score-tag">Score: 0</div>
             </div>
             
-            <div class="rank-card">
-                <div class="rank-info">
-                    <span id="rank-name">Beginner Observer</span>
-                    <span id="score-display">0 XP</span>
+            <div class="content-card">
+                <div class="image-box">
+                    <img id="animal-img" src="" alt="Animal">
                 </div>
-                <div class="progress-track"><div id="rank-bar" class="progress-fill"></div></div>
+                <h2 id="animal-name"></h2>
+                <p id="animal-desc"></p>
+                <div id="options" class="options-container"></div>
             </div>
 
-            <div class="menu-actions">
-                <button class="btn-main" onclick="startScenario()">START PATROL</button>
-                <button class="btn-sub" onclick="openModal('continent-modal')">SELECT REGION</button>
-                <button class="btn-sub" onclick="showEncyclopedia()">ENCYCLOPEDIA</button>
-                <button class="btn-ghost" onclick="shareRank()">SHARE RANK</button>
-            </div>
-        </section>
-
-        <section id="scenario-screen" class="screen">
-            <div class="hud">
-                <button class="btn-icon" onclick="backToMenu()">🏠</button>
-                <div class="badge">SCENARIO</div>
-            </div>
-
-            <div class="scenario-card">
-                <div class="img-frame">
-                    <img id="animal-img" src="" alt="Wildlife">
-                </div>
-                <h2 id="animal-name">---</h2>
-                <p id="animal-desc">---</p>
-            </div>
-
-            <div id="options-container" class="options-stack"></div>
-
-            <div id="feedback-overlay" class="feedback-panel hidden">
-                <div class="feedback-content">
-                    <h3 id="fb-title">Result</h3>
-                    <p id="fb-explanation"></p>
-                    <button class="btn-main" onclick="nextScenario()">NEXT MISSION</button>
+            <div id="feedback-panel" class="panel hidden">
+                <div class="panel-content">
+                    <h3 id="feedback-status"></h3>
+                    <p id="feedback-explanation"></p>
+                    <button id="next-btn" class="btn-primary" onclick="nextScenario()">NEXT</button>
                 </div>
             </div>
-        </section>
+        </div>
 
-        <section id="info-screen" class="screen">
-            <div class="hud">
-                <button class="btn-icon" onclick="backToMenu()">🏠</button>
+        <div id="info-screen" class="screen">
+            <div class="nav-header">
+                <button class="back-link" onclick="backToMenu()">← MENU</button>
                 <h2>Encyclopedia</h2>
             </div>
-            <div id="animal-grid" class="animal-grid"></div>
-        </section>
+            
+            <div id="animal-list" class="encyclopedia-list"></div>
 
-        <div id="continent-modal" class="modal-overlay hidden">
-            <div class="modal-card">
-                <h3>Choose Region</h3>
-                <button class="reg-btn" onclick="setRegion('Africa')">Africa 🐘</button>
-                <button class="reg-btn" onclick="setRegion('North America')">North America 🌲</button>
-                <button class="reg-btn" onclick="setRegion(null)">Global (All) 🌍</button>
-                <button class="btn-ghost" onclick="closeModal()">Close</button>
+            <div id="animal-details" class="details-view hidden">
+                <div class="details-card">
+                    <h3 id="info-name"></h3>
+                    <img id="info-img" src="" alt="Animal">
+                    <p id="info-desc"></p>
+                    <div class="info-grid">
+                        <div class="info-item"><strong>Signs:</strong> <span id="info-signs"></span></div>
+                        <div class="info-item"><strong>Triggers:</strong> <span id="info-triggers"></span></div>
+                        <div class="info-item"><strong>Survival:</strong> <span id="info-tips"></span></div>
+                    </div>
+                    <button class="btn-secondary" onclick="backToList()">BACK TO LIST</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="continent-modal" class="modal hidden">
+            <div class="modal-content">
+                <h3>Select Continent</h3>
+                <button class="modal-opt" onclick="setContinent('Africa')">Africa 🐘</button>
+                <button class="modal-opt" onclick="setContinent('North America')">North America 🌲</button>
+                <button class="modal-opt" onclick="setContinent(null)">All Regions 🌍</button>
+                <button class="btn-ghost" onclick="closeModal()">Cancel</button>
             </div>
         </div>
     </div>
