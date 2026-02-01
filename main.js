@@ -2,189 +2,146 @@ let currentScenarioIndex = 0;
 let userScore = parseInt(localStorage.getItem("score")) || 0;
 let currentContinent = null;
 
-// Initialize
 document.addEventListener("DOMContentLoaded", () => {
-    updateRank();
+  updateRank();
 });
 
-// Navigation
-function showScreen(id) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-}
-
-function backToMenu() { showScreen('main-menu'); }
-
-// Continent Selection
-function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
-function closeModal() { document.querySelectorAll('.modal').forEach(m => m.classList.add('hidden')); }
-
-function setContinent(continent) {
-    currentContinent = continent;
-    closeModal();
-    showToast(`Region set to: ${continent || 'Global'}`);
-}
-
-// Gameplay
 function startScenario() {
-    showScreen("scenario-screen");
-    loadScenario();
+  currentContinent = null;
+  showScreen("scenario-screen");
+  loadScenario();
 }
 
-function loadScenario() {
-    const availableScenarios = scenarios.filter(s => {
-        const animal = animalsInfo.find(a => a.name === s.animal);
-        return animal.unlocked && (!currentContinent || s.continent === currentContinent);
-    });
-    
-    if(availableScenarios.length === 0){
-        showToast("No unlocked animals in this region!", "error");
-        backToMenu();
-        return;
-    }
-
-    const scenario = availableScenarios[Math.floor(Math.random() * availableScenarios.length)];
-
-    document.getElementById("animal-name").innerText = scenario.animal;
-    document.getElementById("animal-img").src = scenario.image;
-    document.getElementById("animal-desc").innerText = scenario.description;
-    document.getElementById("feedback-panel").classList.add("hidden");
-    
-    const optionsDiv = document.getElementById("options");
-    optionsDiv.innerHTML = "";
-    
-    scenario.options.forEach(opt => {
-        const btn = document.createElement("button");
-        btn.className = "opt-btn";
-        btn.textContent = opt.text;
-        btn.onclick = (e) => handleAnswer(opt, scenario, e);
-        optionsDiv.appendChild(btn);
-    });
+function pickContinent() {
+  const continent = prompt("Enter continent (Africa, North America)"); 
+  if(!continent) return;
+  currentContinent = continent;
+  showScreen("scenario-screen");
+  loadScenario();
 }
 
-function handleAnswer(selectedOption, scenario, event) {
-    const status = document.getElementById("feedback-status");
-    const explanation = document.getElementById("feedback-explanation");
-    
-    if(selectedOption.correct){
-        status.innerText = "✅ SUCCESS";
-        status.style.color = "var(--primary)";
-        spawnParticles(event.clientX, event.clientY);
-        updateScore(2);
-    } else {
-        status.innerText = "❌ DANGER";
-        status.style.color = "#e74c3c";
-        updateScore(-1);
-    }
-    
-    explanation.innerText = scenario.explanation;
-    document.getElementById("feedback-panel").classList.remove("hidden");
-}
-
-function nextScenario() {
-    unlockAnimals();
-    loadScenario();
-}
-
-// Score & Rank
-function updateScore(points) {
-    userScore = Math.max(0, userScore + points);
-    localStorage.setItem("score", userScore);
-    updateRank();
-}
-
-function updateRank() {
-    let rank = "Beginner Observer";
-    if(userScore >= 5) rank = "Junior Ranger";
-    if(userScore >= 15) rank = "Field Guide";
-    if(userScore >= 30) rank = "Wildlife Protector";
-    if(userScore >= 50) rank = "Master Ranger";
-
-    document.getElementById("rank-text").innerText = `Rank: ${rank}`;
-    if(document.getElementById("score-tag")) {
-        document.getElementById("score-tag").innerText = `Score: ${userScore}`;
-    }
-}
-
-function unlockAnimals() {
-    animalsInfo.forEach(animal => {
-        if(!animal.unlocked && userScore >= 10 && animal.name === "Elephant") {
-            animal.unlocked = true;
-            showToast("🔓 Unlocked: Elephant!");
-        }
-    });
-}
-
-// Encyclopedia
 function showInfo() {
-    showScreen("info-screen");
-    const listDiv = document.getElementById("animal-list");
-    listDiv.innerHTML = "";
-    listDiv.classList.remove("hidden");
-    document.getElementById("animal-details").classList.add("hidden");
-
-    animalsInfo.forEach(animal => {
-        const btn = document.createElement("button");
-        btn.className = "opt-btn";
-        btn.style.width = "100%";
-        btn.style.marginBottom = "10px";
-        btn.innerHTML = animal.unlocked ? `<strong>${animal.name}</strong>` : `🔒 ${animal.name} (Locked)`;
-        btn.onclick = () => { if(animal.unlocked) showAnimalDetails(animal); };
-        listDiv.appendChild(btn);
-    });
+  showScreen("info-screen");
+  const listDiv = document.getElementById("animal-list");
+  listDiv.innerHTML = "";
+  animalsInfo.forEach(animal => {
+    const btn = document.createElement("button");
+    btn.textContent = animal.unlocked ? animal.name : animal.name + " 🔒";
+    btn.onclick = () => showAnimalDetails(animal);
+    listDiv.appendChild(btn);
+  });
 }
 
 function showAnimalDetails(animal) {
-    document.getElementById("animal-list").classList.add("hidden");
-    const details = document.getElementById("animal-details");
-    details.classList.remove("hidden");
-    
-    document.getElementById("info-name").innerText = animal.name;
-    document.getElementById("info-img").src = animal.image;
-    document.getElementById("info-desc").innerText = animal.description;
-    document.getElementById("info-signs").innerText = animal.signsOfAggression.join(", ");
-    document.getElementById("info-triggers").innerText = animal.whatMakesThemMad.join(", ");
-    document.getElementById("info-tips").innerText = animal.survivalTips.join(", ");
+  document.getElementById("animal-details").classList.remove("hidden");
+  document.getElementById("info-name").innerText = animal.name;
+  document.getElementById("info-img").src = animal.image || "images/placeholder.png";
+  document.getElementById("info-desc").innerText = animal.description;
+  document.getElementById("info-signs").innerText = animal.signsOfAggression.join(", ");
+  document.getElementById("info-triggers").innerText = animal.whatMakesThemMad.join(", ");
+  document.getElementById("info-tips").innerText = animal.survivalTips.join(", ");
+  document.getElementById("animal-list").classList.add("hidden");
 }
 
 function backToList() {
-    document.getElementById("animal-details").classList.add("hidden");
-    document.getElementById("animal-list").classList.remove("hidden");
+  document.getElementById("animal-details").classList.add("hidden");
+  document.getElementById("animal-list").classList.remove("hidden");
 }
 
-// Utils
-function showToast(msg) {
-    const container = document.getElementById("toast-container");
-    const toast = document.createElement("div");
-    toast.className = "toast-msg";
-    toast.innerText = msg;
-    toast.style.cssText = "background:#333;color:white;padding:10px 20px;border-radius:20px;margin-bottom:10px;animation:fadeIn 0.3s forwards;";
-    container.appendChild(toast);
-    setTimeout(() => toast.remove(), 2500);
+function backToMenu() { showScreen("main-menu"); }
+
+function showScreen(id) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.add("hidden"));
+  document.getElementById(id).classList.remove("hidden");
 }
 
-function spawnParticles(x, y) {
-    for(let i=0; i<15; i++) {
-        const p = document.createElement('div');
-        p.className = 'particle';
-        p.style.left = x + 'px';
-        p.style.top = y + 'px';
-        const destX = (Math.random() - 0.5) * 200;
-        const destY = (Math.random() - 0.5) * 200;
-        document.body.appendChild(p);
-        p.animate([
-            { transform: 'translate(0, 0)', opacity: 1 },
-            { transform: `translate(${destX}px, ${destY}px)`, opacity: 0 }
-        ], { duration: 600, easing: 'ease-out' }).onfinish = () => p.remove();
+function loadScenario() {
+  const availableScenarios = scenarios.filter(s => {
+    const animal = animalsInfo.find(a => a.name === s.animal);
+    return animal.unlocked && (!currentContinent || s.continent === currentContinent);
+  });
+
+  if(availableScenarios.length === 0){
+    alert("No unlocked animals in this continent yet!");
+    backToMenu();
+    return;
+  }
+
+  currentScenarioIndex = Math.floor(Math.random() * availableScenarios.length);
+  const scenario = availableScenarios[currentScenarioIndex];
+
+  document.getElementById("animal-name").innerText = scenario.animal;
+  const img = new Image();
+  img.src = scenario.image || "images/placeholder.png";
+  img.onerror = () => img.src = "images/placeholder.png";
+  document.getElementById("animal-img").src = img.src;
+  document.getElementById("animal-desc").innerText = scenario.description;
+
+  const optionsDiv = document.getElementById("options");
+  optionsDiv.innerHTML = "";
+  scenario.options.forEach(opt => {
+    const btn = document.createElement("button");
+    btn.textContent = opt.text;
+    btn.onclick = () => handleAnswer(opt, scenario);
+    optionsDiv.appendChild(btn);
+  });
+
+  const feedback = document.getElementById("feedback");
+  feedback.innerText = "";
+  feedback.className = "";
+  document.getElementById("next-btn").style.display = "none";
+}
+
+function handleAnswer(selectedOption, scenario) {
+  const feedback = document.getElementById("feedback");
+  if(selectedOption.correct){
+    feedback.className = "correct";
+    feedback.innerText = "✅ Correct!\n\n" + scenario.explanation;
+    updateScore(1);
+  } else {
+    feedback.className = "wrong";
+    feedback.innerText = "❌ Not the best choice\n\n" + scenario.explanation;
+  }
+  document.getElementById("next-btn").style.display = "inline-block";
+}
+
+function nextScenario() {
+  unlockAnimals();
+  loadScenario();
+}
+
+function updateScore(points) {
+  userScore += points;
+  localStorage.setItem("score", userScore);
+  updateRank();
+}
+
+function updateRank() {
+  let rank = "Beginner Observer";
+  if(userScore >= 5) rank = "Junior Ranger";
+  if(userScore >= 10) rank = "Field Guide";
+  if(userScore >= 20) rank = "Wildlife Protector";
+  if(userScore >= 35) rank = "Master Ranger";
+  document.getElementById("rank").innerText = `Rank: ${rank}`;
+}
+
+function unlockAnimals() {
+  animalsInfo.forEach(animal => {
+    if(!animal.unlocked){
+      if(userScore >= 5 && animal.name === "Elephant") animal.unlocked = true;
     }
+  });
 }
 
 function shareRank() {
-    const rank = document.getElementById("rank-text").innerText;
-    const text = `I just reached ${rank} in Wildlife Survival! Beat my score? 🐘🦁`;
-    if(navigator.share) {
-        navigator.share({ title: 'Wildlife Survival', text: text, url: window.location.href });
-    } else {
-        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, "_blank");
-    }
+  const rank = document.getElementById("rank").innerText;
+  const text = `I just reached ${rank} in Wildlife Survival Game! Can you beat me? 🐘🦌🦁`;
+  const url = "https://yourgamewebsite.com";
+
+  if(navigator.share){
+    navigator.share({ title:'Wildlife Survival Game', text, url });
+  } else {
+    const fbShare = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${encodeURIComponent(text)}`;
+    window.open(fbShare, "_blank");
+  }
 }
