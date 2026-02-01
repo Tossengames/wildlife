@@ -1,150 +1,62 @@
 :root {
     --primary: #2d5a27;
-    --accent: #f39c12;
-    --danger: #e74c3c;
-    --success: #27ae60;
-    --bg: #f0f4f0;
+    --secondary: #3498db;
+    --bg: #f5f7f5;
+    --text: #2c3e50;
     --white: #ffffff;
 }
 
-* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+* { box-sizing: border-box; font-family: 'Outfit', sans-serif; transition: 0.2s ease; }
 
-body {
-    margin: 0;
-    background: #1a1a1a;
-    font-family: 'Outfit', sans-serif;
-    display: flex;
-    justify-content: center;
-    height: 100vh;
-}
+body { margin: 0; background: #222; display: flex; justify-content: center; }
 
 #game-container {
-    width: 100%;
-    max-width: 480px;
-    background: var(--bg);
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 0 50px rgba(0,0,0,0.5);
+    width: 100%; max-width: 450px; height: 100vh;
+    background: var(--bg); position: relative; overflow-y: auto; overflow-x: hidden;
 }
 
 .screen {
-    position: absolute;
-    inset: 0;
-    padding: 25px;
-    display: none;
-    flex-direction: column;
-    animation: slideIn 0.3s ease-out;
+    position: absolute; inset: 0; padding: 20px;
+    display: none; flex-direction: column; opacity: 0;
 }
 
-.screen.active { display: flex; }
+.screen.active { display: flex; opacity: 1; animation: fadeIn 0.4s forwards; }
 
-@keyframes slideIn {
-    from { transform: translateX(50px); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
-}
+@keyframes fadeIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-/* UI Elements */
-.accent-text { color: var(--primary); font-family: 'Caprasimo'; font-size: 1.8rem; }
+/* Typography */
+h1 { font-family: 'Caprasimo', cursive; font-size: 2.2rem; margin-bottom: 5px; }
+.green { color: var(--primary); }
+.rank-badge { background: #ddd; padding: 5px 15px; border-radius: 20px; font-weight: bold; }
 
-.rank-card {
-    background: var(--white);
-    padding: 15px;
-    border-radius: 15px;
-    margin: 20px 0;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-}
+/* Buttons */
+button { border: none; cursor: pointer; border-radius: 12px; font-weight: bold; }
+.btn-primary { background: var(--primary); color: white; padding: 18px; font-size: 1.1rem; box-shadow: 0 4px 0 #1a3617; }
+.btn-secondary { background: var(--secondary); color: white; padding: 12px; }
+.btn-share { background: #9b59b6; color: white; padding: 12px; }
+.btn-kofi { background: #ff5f5f; color: white; padding: 12px; width: 100%; }
+button:active { transform: translateY(2px); box-shadow: none; }
 
-.progress-track { height: 8px; background: #eee; border-radius: 10px; margin-top: 10px; }
-.progress-fill { height: 100%; background: var(--accent); width: 0%; border-radius: 10px; transition: 0.5s; }
+.menu-grid { display: flex; flex-direction: column; gap: 12px; margin-top: 30px; }
 
-.btn-main {
-    background: var(--primary);
-    color: white;
-    border: none;
-    padding: 20px;
-    border-radius: 15px;
-    font-weight: 800;
-    font-size: 1.1rem;
-    cursor: pointer;
-    box-shadow: 0 6px 0 #1e3d1a;
-}
+/* Scenario Card */
+.content-card { background: white; padding: 15px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+.image-box { width: 100%; height: 200px; border-radius: 15px; overflow: hidden; background: #eee; margin-bottom: 15px; }
+.image-box img { width: 100%; height: 100%; object-fit: cover; }
+.options-container { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+.opt-btn { background: #f8f9fa; border: 2px solid #eee; padding: 15px; text-align: left; border-radius: 10px; }
+.opt-btn:hover { border-color: var(--primary); background: #f0f7ef; }
 
-.btn-main:active { transform: translateY(3px); box-shadow: 0 3px 0 #1e3d1a; }
+/* Feedback Panel */
+.panel { position: absolute; bottom: 0; left: 0; right: 0; background: white; padding: 25px; border-radius: 25px 25px 0 0; box-shadow: 0 -10px 30px rgba(0,0,0,0.2); z-index: 10; animation: slideUp 0.3s forwards; }
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
-/* Gameplay */
-.scenario-card {
-    background: white;
-    border-radius: 20px;
-    padding: 15px;
-    margin-bottom: 20px;
-}
+/* Modal */
+.modal { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 100; }
+.modal-content { background: white; padding: 30px; border-radius: 20px; width: 80%; display: flex; flex-direction: column; gap: 10px; }
+.modal-opt { background: #eee; padding: 15px; border-radius: 10px; }
 
-.img-frame {
-    width: 100%;
-    height: 200px;
-    background: #ddd;
-    border-radius: 15px;
-    overflow: hidden;
-}
-
-.img-frame img { width: 100%; height: 100%; object-fit: cover; }
-
-.options-stack { display: flex; flex-direction: column; gap: 10px; }
-
-.opt-btn {
-    background: white;
-    border: 2px solid #e0e0e0;
-    padding: 15px;
-    border-radius: 12px;
-    font-weight: 600;
-    text-align: left;
-    cursor: pointer;
-}
-
-/* Feedback Overlay */
-.feedback-panel {
-    position: absolute;
-    inset: 0;
-    background: rgba(0,0,0,0.8);
-    display: flex;
-    align-items: center;
-    padding: 20px;
-    z-index: 100;
-}
-
-.feedback-content {
-    background: white;
-    width: 100%;
-    padding: 25px;
-    border-radius: 20px;
-    text-align: center;
-}
-
-/* Particles & Toasts */
-.particle {
-    position: absolute;
-    width: 8px;
-    height: 8px;
-    background: var(--accent);
-    border-radius: 50%;
-    pointer-events: none;
-    animation: fly 0.6s ease-out forwards;
-}
-
-@keyframes fly {
-    to { transform: translate(var(--tw-x), var(--tw-y)) scale(0); opacity: 0; }
-}
-
-.toast {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #333;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 25px;
-    z-index: 1000;
-}
+/* Particle Effect */
+.particle { position: absolute; width: 8px; height: 8px; background: orange; border-radius: 50%; pointer-events: none; }
 
 .hidden { display: none !important; }
