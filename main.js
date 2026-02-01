@@ -1,149 +1,204 @@
-let currentScenarioIndex=0;
-let currentContinent=null;
-let userScore=0;
-let userName="";
+// ======== main.js ========
 
-// ===== INIT =====
-document.addEventListener("DOMContentLoaded",()=>{
-  // Load profile
-  const savedName = localStorage.getItem("userName");
-  const savedScore = parseInt(localStorage.getItem("userScore")) || 0;
-  if(savedName){userName=savedName; userScore=savedScore; showMainMenu(); }
-  else{ showScreen("profile-screen"); }
+// User profile and game state
+let userProfile = {
+  name: "",
+  score: 0,
+  unlockedAnimals: [],
+  currentRank: "Beginner"
+};
+
+let currentScenarioIndex = 0;
+let currentScenarioList = [];
+let selectedContinent = "All";
+
+// Rank thresholds
+const ranks = [
+  { name: "Beginner", minScore: 0 },
+  { name: "Tracker", minScore: 10 },
+  { name: "Ranger", minScore: 25 },
+  { name: "Survival Expert", minScore: 50 },
+  { name: "Master of the Wild", minScore: 80 }
+];
+
+// DOM Elements
+const startScreen = document.getElementById("startScreen");
+const nameInput = document.getElementById("nameInput");
+const startButton = document.getElementById("startButton");
+
+const mainMenu = document.getElementById("mainMenu");
+const continentButtons = document.querySelectorAll(".continentBtn");
+const playBtn = document.getElementById("playBtn");
+const infoBtn = document.getElementById("infoBtn");
+
+const scenarioScreen = document.getElementById("scenarioScreen");
+const animalImage = document.getElementById("animalImage");
+const scenarioDescription = document.getElementById("scenarioDescription");
+const optionsContainer = document.getElementById("optionsContainer");
+const feedbackScreen = document.getElementById("feedbackScreen");
+const feedbackText = document.getElementById("feedbackText");
+const nextBtn = document.getElementById("nextBtn");
+
+const rankDisplay = document.getElementById("rankDisplay");
+const scoreDisplay = document.getElementById("scoreDisplay");
+
+// ======= INITIALIZATION =======
+function initGame() {
+  // Load profile if exists
+  const savedProfile = localStorage.getItem("wildSurvivalProfile");
+  if(savedProfile) {
+    userProfile = JSON.parse(savedProfile);
+  }
+
+  updateRankDisplay();
+  showStartScreen();
+}
+
+// ======= START SCREEN =======
+function showStartScreen() {
+  startScreen.style.display = "block";
+  mainMenu.style.display = "none";
+  scenarioScreen.style.display = "none";
+  feedbackScreen.style.display = "none";
+}
+
+startButton.addEventListener("click", () => {
+  const name = nameInput.value.trim();
+  if(name === "") {
+    alert("Please enter your name to start!");
+    return;
+  }
+  userProfile.name = name;
+  localStorage.setItem("wildSurvivalProfile", JSON.stringify(userProfile));
+  showMainMenu();
 });
 
-// ===== PROFILE =====
-function saveProfile(){
-  const nameInput=document.getElementById("player-name").value.trim();
-  if(!nameInput){alert("Please enter your name."); return;}
-  userName=nameInput;
-  localStorage.setItem("userName",userName);
-  localStorage.setItem("userScore",0);
-  showMainMenu();
+// ======= MAIN MENU =======
+function showMainMenu() {
+  startScreen.style.display = "none";
+  mainMenu.style.display = "block";
+  scenarioScreen.style.display = "none";
+  feedbackScreen.style.display = "none";
+  updateRankDisplay();
 }
 
-// ===== SCREENS =====
-function showScreen(id){
-  document.querySelectorAll(".screen").forEach(s=>s.classList.add("hidden"));
-  document.getElementById(id).classList.remove("hidden");
-}
-function showMainMenu(){ 
-  document.getElementById("profile-name").innerText=userName;
-  updateRank();
-  showScreen("main-menu"); 
-}
-function backToMenu(){showMainMenu();}
-function backToList(){document.getElementById("animal-details").classList.add("hidden");document.getElementById("animal-list").classList.remove("hidden");}
+// Continent buttons
+continentButtons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    selectedContinent = btn.dataset.continent;
+    alert(`Selected ${selectedContinent}`);
+  });
+});
 
-// ===== CONTINENT SELECTION =====
-function showContinentSelection(){
-  const div = document.getElementById("continent-buttons");
-  div.innerHTML="";
-  const continents = [...new Set(animalsInfo.map(a=>a.continent))];
-  continents.forEach(c=>{
+// Play scenarios
+playBtn.addEventListener("click", () => {
+  loadScenarios();
+  showScenario();
+});
+
+// Info button (simple alert for demo)
+infoBtn.addEventListener("click", () => {
+  let infoText = "Animals Info:\n";
+  animalsInfo.forEach(animal => {
+    infoText += `${animal.name} - ${animal.unlocked || userProfile.score >= animal.unlockScore ? "Unlocked" : "Locked"}\n`;
+  });
+  alert(infoText);
+});
+
+// ======= SCENARIO FLOW =======
+function loadScenarios() {
+  currentScenarioList = scenarios.filter(scn => {
+    const animalData = animalsInfo.find(a => a.name === scn.animal);
+    return animalData && (animalData.unlocked || userProfile.score >= animalData.unlockScore) &&
+           (selectedContinent === "All" || animalData.continent === selectedContinent);
+  });
+  currentScenarioIndex = 0;
+}
+
+function showScenario() {
+  if(currentScenarioIndex >= currentScenarioList.length) {
+    alert("All scenarios completed in this selection!");
+    showMainMenu();
+    return;
+  }
+
+  scenarioScreen.style.display = "block";
+  mainMenu.style.display = "none";
+  feedbackScreen.style.display = "none";
+
+  const scenario = currentScenarioList[currentScenarioIndex];
+  const animal = animalsInfo.find(a => a.name === scenario.animal);
+
+  // Show image (placeholder if missing)
+  animalImage.src = animal.image || "https://via.placeholder.com/300x200?text=No+Image";
+  animalImage.onerror = () => { animalImage.src = "https://via.placeholder.com/300x200?text=No+Image"; }
+
+  scenarioDescription.textContent = scenario.description;
+
+  // Show options
+  optionsContainer.innerHTML = "";
+  scenario.options.forEach((opt, idx) => {
     const btn = document.createElement("button");
-    const unlocked = animalsInfo.some(a=>a.continent===c && a.unlocked);
-    btn.textContent=c+(unlocked?"":" 🔒");
-    btn.disabled=!unlocked;
-    btn.onclick=()=>{currentContinent=c; startScenario();};
-    div.appendChild(btn);
-  });
-  showScreen("continent-screen");
-}
-
-// ===== INFO SCREEN =====
-function showInfo(){
-  showScreen("info-screen");
-  const d=document.getElementById("animal-list"); d.innerHTML="";
-  animalsInfo.forEach(a=>{
-    const b=document.createElement("button");
-    b.textContent=a.unlocked?a.name:a.name+" 🔒";
-    b.disabled=!a.unlocked;
-    b.onclick=()=>{if(a.unlocked) showAnimalDetails(a); else alert(`Unlock ${a.name} by earning ${a.unlockScore} points!`);}
-    d.appendChild(b);
+    btn.textContent = opt.text;
+    btn.classList.add("optionBtn");
+    btn.addEventListener("click", () => handleOptionSelect(idx));
+    optionsContainer.appendChild(btn);
   });
 }
 
-function showAnimalDetails(a){
-  document.getElementById("animal-details").classList.remove("hidden");
-  document.getElementById("info-name").innerText=a.name;
-  const infoImg=document.getElementById("info-img");
-  infoImg.src=a.image || "https://via.placeholder.com/400x300?text=Animal+Image";
-  infoImg.onerror=()=>{infoImg.src="https://via.placeholder.com/400x300?text=Animal+Image";}
-  document.getElementById("info-desc").innerText=a.description;
-  document.getElementById("info-signs").innerText=a.signsOfAggression.join(", ");
-  document.getElementById("info-triggers").innerText=a.whatMakesThemMad.join(", ");
-  document.getElementById("info-tips").innerText=a.survivalTips.join(", ");
-  document.getElementById("animal-list").classList.add("hidden");
+function handleOptionSelect(optionIndex) {
+  const scenario = currentScenarioList[currentScenarioIndex];
+  const selectedOption = scenario.options[optionIndex];
+
+  // Disable all buttons
+  document.querySelectorAll(".optionBtn").forEach(btn => btn.disabled = true);
+
+  // Feedback
+  feedbackScreen.style.display = "block";
+  feedbackText.innerHTML = selectedOption.correct ? 
+    `✅ Correct!<br>${scenario.explanation}` :
+    `❌ Wrong!<br>${scenario.explanation}`;
+
+  if(selectedOption.correct) {
+    userProfile.score += 1;
+    checkAnimalUnlocks();
+    updateRankDisplay();
+    localStorage.setItem("wildSurvivalProfile", JSON.stringify(userProfile));
+  }
+
+  nextBtn.style.display = "inline-block";
 }
 
-// ===== SCENARIO =====
-function startScenario(){ 
-  showScreen("scenario-screen"); 
-  loadScenario(); 
+// Next scenario
+nextBtn.addEventListener("click", () => {
+  currentScenarioIndex += 1;
+  nextBtn.style.display = "none";
+  showScenario();
+});
+
+// ======= RANK & SCORE =======
+function updateRankDisplay() {
+  // Determine rank
+  for(let i = ranks.length-1; i>=0; i--) {
+    if(userProfile.score >= ranks[i].minScore) {
+      userProfile.currentRank = ranks[i].name;
+      break;
+    }
+  }
+
+  rankDisplay.textContent = `Rank: ${userProfile.currentRank}`;
+  scoreDisplay.textContent = `Score: ${userProfile.score}`;
 }
 
-function loadScenario(){
-  const available = scenarios.filter(s=>{
-    const a = animalsInfo.find(an=>an.name===s.animal);
-    return a.unlocked && (!currentContinent || s.continent===currentContinent);
+// Unlock animals based on score
+function checkAnimalUnlocks() {
+  animalsInfo.forEach(animal => {
+    if(!animal.unlocked && userProfile.score >= animal.unlockScore) {
+      animal.unlocked = true;
+      alert(`🎉 New animal unlocked: ${animal.name}!`);
+    }
   });
-  if(available.length===0){alert("No unlocked animals for this continent!"); backToMenu(); return;}
-  currentScenarioIndex=Math.floor(Math.random()*available.length);
-  const scn=available[currentScenarioIndex];
-
-  document.getElementById("animal-name").innerText=scn.animal;
-  const imgEl=document.getElementById("animal-img");
-  imgEl.src=scn.image || "https://via.placeholder.com/400x300?text=Animal+Image";
-  imgEl.onerror=()=>{imgEl.src="https://via.placeholder.com/400x300?text=Animal+Image";}
-  document.getElementById("animal-desc").innerText=scn.description;
-
-  const optsDiv=document.getElementById("options"); optsDiv.innerHTML="";
-  scn.options.forEach(o=>{
-    const b=document.createElement("button");
-    b.textContent=o.text;
-    b.onclick=()=>handleAnswer(o,scn);
-    optsDiv.appendChild(b);
-  });
-
-  const f=document.getElementById("feedback"); f.innerText=""; f.className="";
-  document.getElementById("next-btn").style.display="none";
 }
 
-function handleAnswer(opt,scn){
-  const f=document.getElementById("feedback");
-  // disable all option buttons
-  document.querySelectorAll("#options button").forEach(b=>b.disabled=true);
-  if(opt.correct){f.className="correct"; f.innerText="✅ Correct!\n\n"+scn.explanation; addScore(1);}
-  else{f.className="wrong"; f.innerText="❌ Not the best choice\n\n"+scn.explanation;}
-  document.getElementById("next-btn").style.display="inline-block";
-}
-
-function nextScenario(){unlockAnimals(); loadScenario();}
-
-// ===== SCORE & RANK =====
-function addScore(p){userScore+=p; localStorage.setItem("userScore",userScore); updateRank();}
-function updateRank(){
-  let rank="Beginner Observer", next=5;
-  if(userScore>=5){rank="Junior Ranger"; next=10;}
-  if(userScore>=10){rank="Field Guide"; next=20;}
-  if(userScore>=20){rank="Wildlife Protector"; next=35;}
-  if(userScore>=35){rank="Master Ranger"; next="—";}
-  document.getElementById("rank").innerText="Rank: "+rank;
-  document.getElementById("progress").innerText=next==="—"?"Max Rank":"Points to next rank: "+(next-userScore);
-}
-
-// ===== UNLOCK ANIMALS =====
-function unlockAnimals(){
-  animalsInfo.forEach(a=>{
-    if(!a.unlocked && userScore>=a.unlockScore) a.unlocked=true;
-}
-
-// ===== SHARE =====
-function shareRank(){
-  const r=document.getElementById("rank").innerText;
-  const t=`I just reached ${r} in Wildlife Survival Game! Can you beat me? 🐘🦌🦁`;
-  const u="https://yourgamewebsite.com";
-  if(navigator.share){navigator.share({title:"Wildlife Survival Game",text:t,url:u});}
-  else{window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(u)}&quote=${encodeURIComponent(t)}`,"_blank");}
-}
+// ======= INIT =======
+initGame();
