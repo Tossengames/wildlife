@@ -8,16 +8,36 @@
 </head>
 <body>
 
-<!-- MAIN MENU -->
-<div id="main-menu" class="screen">
+<!-- PROFILE SCREEN -->
+<div id="profile-screen" class="screen">
   <div class="card">
     <h1>🦁 Wildlife Survival Game 🐘</h1>
+    <p>Enter your name to start:</p>
+    <input type="text" id="player-name" placeholder="Your name">
+    <button onclick="saveProfile()">Start Game</button>
+  </div>
+</div>
+
+<!-- MAIN MENU -->
+<div id="main-menu" class="screen hidden">
+  <div class="card">
+    <h1>Welcome, <span id="profile-name"></span>!</h1>
+    <p id="rank">Rank: Beginner Observer</p>
+    <p id="progress"></p>
     <button onclick="startScenario()">Play Scenarios</button>
-    <button onclick="pickContinent()">Pick Continent</button>
+    <button onclick="showContinentSelection()">Pick Continent</button>
     <button onclick="showInfo()">Animal Info</button>
     <button onclick="shareRank()">Share My Rank</button>
     <a href="https://ko-fi.com/yourusername" target="_blank"><button class="accent">Support / Ko-fi</button></a>
-    <p id="rank">Rank: Beginner Observer</p>
+  </div>
+</div>
+
+<!-- CONTINENT SELECTION -->
+<div id="continent-screen" class="screen hidden">
+  <div class="card">
+    <h2>Select a Continent</h2>
+    <div id="continent-buttons"></div>
+    <button onclick="backToMenu()">Back to Menu</button>
   </div>
 </div>
 
@@ -52,8 +72,8 @@
   </div>
 </div>
 
-<script src="scenarios.js"></script>
 <script src="animals.js"></script>
+<script src="scenarios.js"></script>
 <script src="main.js"></script>
 </body>
 </html>
