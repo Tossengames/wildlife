@@ -1,4 +1,4 @@
-/* ===== GLOBAL ===== */
+/* ===== GLOBAL STYLES ===== */
 body {
   font-family: 'Arial', sans-serif;
   margin: 0;
@@ -17,8 +17,21 @@ body {
   text-align: center;
 }
 
+/* ===== HEADINGS ===== */
 h1, h2, h3 {
   margin: 10px 0;
+}
+
+/* ===== INPUTS ===== */
+input[type="text"] {
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 10px;
+  border: 1px solid #888;
+  margin: 10px 0;
+  width: 200px;
+  max-width: 80%;
+  text-align: center;
 }
 
 /* ===== BUTTONS ===== */
@@ -41,15 +54,6 @@ button:hover {
 button:disabled {
   background-color: #ccc;
   cursor: not-allowed;
-}
-
-/* ===== INPUT ===== */
-input[type="text"] {
-  padding: 10px;
-  font-size: 16px;
-  border-radius: 10px;
-  border: 1px solid #888;
-  margin: 10px 0;
 }
 
 /* ===== ANIMAL IMAGE ===== */
@@ -79,6 +83,22 @@ input[type="text"] {
   background-color: #1976d2;
 }
 
+/* ===== FEEDBACK LABEL ===== */
+#feedbackScreen {
+  width: 90%;
+  max-width: 500px;
+  margin-bottom: 10px;
+}
+
+#feedbackText {
+  font-size: 18px;
+  padding: 12px;
+  background-color: rgba(255,255,255,0.8);
+  border-radius: 10px;
+  text-align: center;
+  min-height: 50px;
+}
+
 /* ===== RANK & SCORE ===== */
 .rankScore {
   margin: 10px 0;
@@ -90,12 +110,77 @@ input[type="text"] {
   margin: 15px 0;
 }
 
-/* ===== FEEDBACK SCREEN ===== */
-#feedbackScreen p {
-  font-size: 18px;
-  padding: 15px;
-  background-color: rgba(255,255,255,0.8);
-  border-radius: 15px;
-  max-width: 90%;
-  margin-bottom: 20px;
+/* ===== CONTINENT BUTTONS ===== */
+.continentButtons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 10px 0;
+}
+
+.continentButtons button {
+  margin: 5px;
+  background-color: #ff9800;
+}
+
+.continentButtons button:hover {
+  background-color: #f57c00;
+}
+
+/* ===== ANIMALS INFO LIST ===== */
+#animalsList {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 10px 0;
+}
+
+#animalsList button {
+  margin: 5px;
+  min-width: 120px;
+  background-color: #9c27b0;
+}
+
+#animalsList button:hover {
+  background-color: #7b1fa2;
+}
+
+/* ===== BACK BUTTONS ===== */
+#backFromContinent,
+#backFromAnimals,
+#backFromDetail {
+  background-color: #607d8b;
+}
+
+#backFromContinent:hover,
+#backFromAnimals:hover,
+#backFromDetail:hover {
+  background-color: #455a64;
+}
+
+/* ===== SCENARIO NEXT BUTTON ===== */
+#nextBtn {
+  margin-top: 15px;
+  background-color: #e91e63;
+}
+
+#nextBtn:hover {
+  background-color: #c2185b;
+}
+
+/* ===== MOBILE RESPONSIVE ===== */
+@media (max-width: 600px) {
+  input[type="text"] {
+    width: 80%;
+  }
+
+  .optionsContainer button {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  #feedbackText {
+    font-size: 16px;
+    padding: 10px;
+  }
 }
