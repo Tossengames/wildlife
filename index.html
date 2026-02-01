@@ -1,79 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Wildlife Survival Game</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wild Survival Game</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-<!-- PROFILE SCREEN -->
-<div id="profile-screen" class="screen">
-  <div class="card">
-    <h1>🦁 Wildlife Survival Game 🐘</h1>
-    <p>Enter your name to start:</p>
-    <input type="text" id="player-name" placeholder="Your name">
-    <button onclick="saveProfile()">Start Game</button>
+  <!-- ===== START SCREEN ===== -->
+  <div id="startScreen" class="screen">
+    <h1>Wild Survival</h1>
+    <p>Enter your name to begin your adventure:</p>
+    <input type="text" id="nameInput" placeholder="Your name">
+    <button id="startButton">Start</button>
   </div>
-</div>
 
-<!-- MAIN MENU -->
-<div id="main-menu" class="screen hidden">
-  <div class="card">
-    <h1>Welcome, <span id="profile-name"></span>!</h1>
-    <p id="rank">Rank: Beginner Observer</p>
-    <p id="progress"></p>
-    <button onclick="startScenario()">Play Scenarios</button>
-    <button onclick="showContinentSelection()">Pick Continent</button>
-    <button onclick="showInfo()">Animal Info</button>
-    <button onclick="shareRank()">Share My Rank</button>
-    <a href="https://ko-fi.com/yourusername" target="_blank"><button class="accent">Support / Ko-fi</button></a>
-  </div>
-</div>
-
-<!-- CONTINENT SELECTION -->
-<div id="continent-screen" class="screen hidden">
-  <div class="card">
-    <h2>Select a Continent</h2>
-    <div id="continent-buttons"></div>
-    <button onclick="backToMenu()">Back to Menu</button>
-  </div>
-</div>
-
-<!-- SCENARIO SCREEN -->
-<div id="scenario-screen" class="screen hidden">
-  <div class="card">
-    <h2 id="animal-name"></h2>
-    <img id="animal-img" src="https://via.placeholder.com/400x300?text=Animal+Image" alt="Animal">
-    <p id="animal-desc"></p>
-    <div id="options"></div>
-    <p id="feedback"></p>
-    <button id="next-btn" onclick="nextScenario()">Next Scenario</button>
-    <button onclick="backToMenu()">Back to Menu</button>
-  </div>
-</div>
-
-<!-- INFO SCREEN -->
-<div id="info-screen" class="screen hidden">
-  <div class="card">
-    <h2>Animal Encyclopedia</h2>
-    <div id="animal-list"></div>
-    <div id="animal-details" class="hidden">
-      <h3 id="info-name"></h3>
-      <img id="info-img" src="https://via.placeholder.com/400x300?text=Animal+Image" alt="Animal">
-      <p id="info-desc"></p>
-      <p><b>Signs of Aggression:</b> <span id="info-signs"></span></p>
-      <p><b>Triggers:</b> <span id="info-triggers"></span></p>
-      <p><b>Survival Tips:</b> <span id="info-tips"></span></p>
-      <button onclick="backToList()">Back</button>
+  <!-- ===== MAIN MENU ===== -->
+  <div id="mainMenu" class="screen" style="display:none;">
+    <h2>Welcome, <span id="userNameDisplay"></span></h2>
+    <div class="rankScore">
+      <span id="rankDisplay">Rank: Beginner</span> | <span id="scoreDisplay">Score: 0</span>
     </div>
-    <button onclick="backToMenu()">Back to Menu</button>
-  </div>
-</div>
 
-<script src="animals.js"></script>
-<script src="scenarios.js"></script>
-<script src="main.js"></script>
+    <div class="menuButtons">
+      <h3>Select Continent</h3>
+      <button class="continentBtn" data-continent="All">All</button>
+      <button class="continentBtn" data-continent="Africa">Africa</button>
+      <button class="continentBtn" data-continent="North America">North America</button>
+      <button class="continentBtn" data-continent="Asia">Asia</button>
+      <button class="continentBtn" data-continent="Australia">Australia</button>
+    </div>
+
+    <div class="menuButtons">
+      <button id="playBtn">Play Scenarios</button>
+      <button id="infoBtn">Animals Info</button>
+    </div>
+  </div>
+
+  <!-- ===== SCENARIO SCREEN ===== -->
+  <div id="scenarioScreen" class="screen" style="display:none;">
+    <h2>Scenario</h2>
+    <img id="animalImage" src="" alt="Animal" class="animalImage">
+    <p id="scenarioDescription"></p>
+    <div id="optionsContainer" class="optionsContainer"></div>
+  </div>
+
+  <!-- ===== FEEDBACK SCREEN ===== -->
+  <div id="feedbackScreen" class="screen" style="display:none;">
+    <p id="feedbackText"></p>
+    <button id="nextBtn" style="display:none;">Next Scenario</button>
+  </div>
+
+  <script src="animals.js"></script>
+  <script src="scenarios.js"></script>
+  <script src="main.js"></script>
 </body>
 </html>
