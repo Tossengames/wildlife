@@ -1,96 +1,150 @@
 :root {
     --primary: #2d5a27;
     --accent: #f39c12;
-    --bg: #f4f7f6;
-    --card: #ffffff;
-    --text: #2c3e50;
-    --wrong: #e74c3c;
-    --correct: #27ae60;
+    --danger: #e74c3c;
+    --success: #27ae60;
+    --bg: #f0f4f0;
+    --white: #ffffff;
 }
 
-* { box-sizing: border-box; transition: all 0.3s ease; }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
 body {
     margin: 0;
+    background: #1a1a1a;
     font-family: 'Outfit', sans-serif;
-    background-color: var(--bg);
-    color: var(--text);
     display: flex;
     justify-content: center;
-    overflow-x: hidden;
+    height: 100vh;
 }
 
 #game-container {
     width: 100%;
-    max-width: 450px;
-    height: 100vh;
+    max-width: 480px;
+    background: var(--bg);
     position: relative;
-    background: white;
-    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    overflow: hidden;
+    box-shadow: 0 0 50px rgba(0,0,0,0.5);
 }
 
 .screen {
     position: absolute;
     inset: 0;
-    padding: 20px;
+    padding: 25px;
     display: none;
     flex-direction: column;
+    animation: slideIn 0.3s ease-out;
 }
 
-.screen.active { display: flex; animation: fadeIn 0.4s ease-out; }
+.screen.active { display: flex; }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+@keyframes slideIn {
+    from { transform: translateX(50px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
 }
 
 /* UI Elements */
-.highlight { color: var(--primary); font-family: 'Caprasimo', cursive; font-size: 1.5rem; }
+.accent-text { color: var(--primary); font-family: 'Caprasimo'; font-size: 1.8rem; }
 
-.btn-primary {
+.rank-card {
+    background: var(--white);
+    padding: 15px;
+    border-radius: 15px;
+    margin: 20px 0;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.progress-track { height: 8px; background: #eee; border-radius: 10px; margin-top: 10px; }
+.progress-fill { height: 100%; background: var(--accent); width: 0%; border-radius: 10px; transition: 0.5s; }
+
+.btn-main {
     background: var(--primary);
     color: white;
-    padding: 18px;
-    border-radius: 12px;
     border: none;
-    font-weight: bold;
+    padding: 20px;
+    border-radius: 15px;
+    font-weight: 800;
     font-size: 1.1rem;
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(45, 90, 39, 0.3);
+    box-shadow: 0 6px 0 #1e3d1a;
 }
 
-.btn-primary:active { transform: scale(0.95); }
+.btn-main:active { transform: translateY(3px); box-shadow: 0 3px 0 #1e3d1a; }
 
-.options-grid {
-    display: grid;
-    gap: 12px;
-    margin-top: auto;
-}
-
-.option-btn {
+/* Gameplay */
+.scenario-card {
     background: white;
-    border: 2px solid #ddd;
+    border-radius: 20px;
     padding: 15px;
-    border-radius: 10px;
-    cursor: pointer;
-    text-align: left;
-    font-weight: 500;
+    margin-bottom: 20px;
 }
 
-.option-btn:hover { border-color: var(--primary); }
+.img-frame {
+    width: 100%;
+    height: 200px;
+    background: #ddd;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.img-frame img { width: 100%; height: 100%; object-fit: cover; }
+
+.options-stack { display: flex; flex-direction: column; gap: 10px; }
+
+.opt-btn {
+    background: white;
+    border: 2px solid #e0e0e0;
+    padding: 15px;
+    border-radius: 12px;
+    font-weight: 600;
+    text-align: left;
+    cursor: pointer;
+}
 
 /* Feedback Overlay */
-#feedback-panel {
+.feedback-panel {
     position: absolute;
-    bottom: 0; left: 0; right: 0;
-    background: white;
-    padding: 30px 20px;
-    border-radius: 30px 30px 0 0;
-    box-shadow: 0 -10px 30px rgba(0,0,0,0.1);
-    z-index: 10;
-    animation: slideUp 0.3s ease;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    z-index: 100;
 }
 
-@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.feedback-content {
+    background: white;
+    width: 100%;
+    padding: 25px;
+    border-radius: 20px;
+    text-align: center;
+}
+
+/* Particles & Toasts */
+.particle {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    animation: fly 0.6s ease-out forwards;
+}
+
+@keyframes fly {
+    to { transform: translate(var(--tw-x), var(--tw-y)) scale(0); opacity: 0; }
+}
+
+.toast {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 25px;
+    z-index: 1000;
+}
 
 .hidden { display: none !important; }
