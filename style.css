@@ -1658,13 +1658,8 @@ body {
   scroll-behavior: smooth;
 }
 
-/* Fixed back button for animal details */
-#animal-details-screen .screen-container {
-  position: relative;
-  padding-bottom: 80px !important;
-}
-
-.fixed-back-button {
+/* FIXED: Universal back button that goes to previous screen */
+#universal-back-btn {
   position: fixed !important;
   bottom: 20px !important;
   left: 20px !important;
@@ -1681,7 +1676,7 @@ body {
   font-size: 1.1rem !important;
   font-weight: 600 !important;
   cursor: pointer !important;
-  display: flex !important;
+  display: none !important; /* Hidden by default */
   align-items: center !important;
   justify-content: center !important;
   gap: 10px !important;
@@ -1690,7 +1685,7 @@ body {
   -webkit-backdrop-filter: blur(10px) !important;
 }
 
-.fixed-back-button:active {
+#universal-back-btn:active {
   transform: scale(0.95) !important;
 }
 
@@ -1714,6 +1709,7 @@ body {
   z-index: 100 !important;
   backdrop-filter: blur(10px) !important;
   -webkit-backdrop-filter: blur(10px) !important;
+  display: none !important; /* Hidden by default */
 }
 
 .share-screenshot-btn:active {
