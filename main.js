@@ -27,69 +27,57 @@ let isInitialized = false;
 
 // Initialize game when DOM is loaded
 document.addEventListener("DOMContentLoaded", function() {
-  // Show loading overlay
-  showLoading(true);
+  console.log("DOM Content Loaded - Starting initialization");
   
-  // Initialize with a small delay for better UX
+  // Hide all screens first
+  const screens = document.querySelectorAll('.screen');
+  screens.forEach(screen => {
+    screen.style.display = 'none';
+  });
+  
+  // Show main menu immediately
+  const mainMenu = document.getElementById("main-menu");
+  if (mainMenu) {
+    mainMenu.style.display = 'block';
+    mainMenu.classList.add('active');
+    console.log("Main menu displayed");
+  }
+  
+  // Initialize core functions
+  initGame();
+  updateDisplay();
+  
+  // Initialize particles
+  initParticles();
+  
+  // Load settings
+  loadSettings();
+  
+  // Add event listeners
+  const animalSearch = document.getElementById("animal-search");
+  const continentFilter = document.getElementById("continent-filter");
+  
+  if (animalSearch) {
+    animalSearch.addEventListener("input", function() {
+      setTimeout(loadAnimalList, 100);
+    });
+  }
+  
+  if (continentFilter) {
+    continentFilter.addEventListener("change", loadAnimalList);
+  }
+  
+  isInitialized = true;
+  
+  console.log("Game initialized successfully");
+  
+  // Show welcome notification
   setTimeout(() => {
-    console.log("Game initializing...");
-    
-    // Hide everything except main menu
-    hideAllScreens();
-    showScreen("main-menu");
-    
-    initGame();
-    updateDisplay();
-    
-    // Initialize particles
-    initParticles();
-    
-    // Load settings from localStorage
-    loadSettings();
-    
-    // Add event listeners
-    const animalSearch = document.getElementById("animal-search");
-    const continentFilter = document.getElementById("continent-filter");
-    
-    if (animalSearch) {
-      animalSearch.addEventListener("input", debounce(loadAnimalList, 300));
-    }
-    
-    if (continentFilter) {
-      continentFilter.addEventListener("change", loadAnimalList);
-    }
-    
-    // Add keyboard shortcuts
-    document.addEventListener('keydown', handleKeyboardShortcuts);
-    
-    // Prevent zoom on double-tap
-    preventDoubleTapZoom();
-    
-    isInitialized = true;
-    showLoading(false);
-    
-    console.log("Game initialized successfully");
-    
-    // Show welcome notification
-    setTimeout(() => {
-      showNotification("Welcome!", "Start by playing scenarios or browsing the encyclopedia", "info");
-    }, 1000);
-  }, 500);
+    showNotification("Welcome!", "Start by playing scenarios or browsing the encyclopedia", "info");
+  }, 1000);
 });
 
-// Show/hide loading overlay
-function showLoading(show) {
-  const loadingOverlay = document.getElementById('loading-overlay');
-  if (loadingOverlay) {
-    if (show) {
-      loadingOverlay.classList.add('active');
-    } else {
-      loadingOverlay.classList.remove('active');
-    }
-  }
-}
-
-// Debounce function for search
+// Simple debounce function
 function debounce(func, wait) {
   let timeout;
   return function executedFunction(...args) {
@@ -104,8 +92,9 @@ function debounce(func, wait) {
 
 // Hide all screens
 function hideAllScreens() {
-  const screens = document.querySelectorAll('.screen, .screen-overlay');
+  const screens = document.querySelectorAll('.screen');
   screens.forEach(screen => {
+    screen.style.display = 'none';
     screen.classList.remove('active');
   });
 }
@@ -122,9 +111,10 @@ function showScreen(id) {
   // Show target screen
   const targetScreen = document.getElementById(id);
   if (targetScreen) {
-    targetScreen.classList.add('active');
-    document.body.scrollTop = 0;
-    document.documentElement.scrollTop = 0;
+    targetScreen.style.display = 'block';
+    setTimeout(() => {
+      targetScreen.classList.add('active');
+    }, 10);
     
     // Initialize screen-specific content
     switch(id) {
@@ -148,8 +138,10 @@ function showScreen(id) {
 function showOverlay(id) {
   const overlay = document.getElementById(id);
   if (overlay) {
-    overlay.classList.add('active');
-    document.body.style.overflow = 'hidden';
+    overlay.style.display = 'flex';
+    setTimeout(() => {
+      overlay.classList.add('active');
+    }, 10);
   }
 }
 
@@ -158,7 +150,9 @@ function hideOverlay(id) {
   const overlay = document.getElementById(id);
   if (overlay) {
     overlay.classList.remove('active');
-    document.body.style.overflow = '';
+    setTimeout(() => {
+      overlay.style.display = 'none';
+    }, 300);
   }
 }
 
@@ -178,6 +172,14 @@ function backToMenuFromFeedback() {
 
 // Initialize game state and UI
 function initGame() {
+  console.log("Initializing game...");
+  
+  // Make sure we have basic elements
+  if (!document.getElementById("score")) {
+    console.error("Score element not found!");
+    return;
+  }
+  
   updateScoreDisplay();
   updateRank();
   updateAnimalCount();
@@ -186,7 +188,12 @@ function initGame() {
   generateScenarioQueue();
   
   // Update best streak display
-  document.getElementById('best-streak').textContent = gameState.gameSession.bestStreak;
+  const bestStreakElement = document.getElementById('best-streak');
+  if (bestStreakElement) {
+    bestStreakElement.textContent = gameState.gameSession.bestStreak;
+  }
+  
+  console.log("Game initialized with score:", gameState.userScore);
 }
 
 // Generate random scenario queue
@@ -195,7 +202,7 @@ function generateScenarioQueue() {
   const availableScenarios = getAvailableScenarios();
   
   if (availableScenarios.length === 0) {
-    showNotification("No Scenarios Available", "Unlock more animals to play scenarios", "warning");
+    console.warn("No scenarios available to generate queue");
     return;
   }
   
@@ -222,14 +229,22 @@ function getAvailableScenarios() {
 
 // Update display elements
 function updateDisplay() {
-  document.getElementById("score").textContent = gameState.userScore;
-  document.getElementById("current-score").textContent = gameState.userScore;
-  document.getElementById("animal-count").textContent = `${gameState.unlockedAnimals.length}/${animalsInfo.length}`;
+  const scoreElement = document.getElementById("score");
+  const currentScoreElement = document.getElementById("current-score");
+  const animalCountElement = document.getElementById("animal-count");
+  
+  if (scoreElement) scoreElement.textContent = gameState.userScore;
+  if (currentScoreElement) currentScoreElement.textContent = gameState.userScore;
+  if (animalCountElement) {
+    animalCountElement.textContent = `${gameState.unlockedAnimals.length}/${animalsInfo.length}`;
+  }
 }
 
 // Update score display with animation
 function updateScoreDisplay() {
   const scoreElement = document.getElementById("score");
+  if (!scoreElement) return;
+  
   const currentScore = parseInt(scoreElement.textContent) || 0;
   const targetScore = gameState.userScore;
   
@@ -307,10 +322,15 @@ function selectContinent(continent) {
   gameState.gameSession.currentStreak = 0;
   
   // Update session display
-  document.getElementById("scenario-number").textContent = "1";
-  document.getElementById("scenario-progress-fill").style.width = "10%";
-  document.getElementById("current-streak").textContent = "0";
-  document.getElementById("session-accuracy").textContent = "0%";
+  const scenarioNumberElement = document.getElementById("scenario-number");
+  const progressFillElement = document.getElementById("scenario-progress-fill");
+  const currentStreakElement = document.getElementById("current-streak");
+  const sessionAccuracyElement = document.getElementById("session-accuracy");
+  
+  if (scenarioNumberElement) scenarioNumberElement.textContent = "1";
+  if (progressFillElement) progressFillElement.style.width = "10%";
+  if (currentStreakElement) currentStreakElement.textContent = "0";
+  if (sessionAccuracyElement) sessionAccuracyElement.textContent = "0%";
 }
 
 // Start random scenario
@@ -323,10 +343,15 @@ function startScenario() {
   gameState.gameSession.currentStreak = 0;
   
   // Update session display
-  document.getElementById("scenario-number").textContent = "1";
-  document.getElementById("scenario-progress-fill").style.width = "10%";
-  document.getElementById("current-streak").textContent = "0";
-  document.getElementById("session-accuracy").textContent = "0%";
+  const scenarioNumberElement = document.getElementById("scenario-number");
+  const progressFillElement = document.getElementById("scenario-progress-fill");
+  const currentStreakElement = document.getElementById("current-streak");
+  const sessionAccuracyElement = document.getElementById("session-accuracy");
+  
+  if (scenarioNumberElement) scenarioNumberElement.textContent = "1";
+  if (progressFillElement) progressFillElement.style.width = "10%";
+  if (currentStreakElement) currentStreakElement.textContent = "0";
+  if (sessionAccuracyElement) sessionAccuracyElement.textContent = "0%";
 }
 
 // Load scenario
@@ -361,14 +386,22 @@ function loadScenario() {
   gameState.gameSession.scenariosPlayed++;
   
   // Update UI elements
-  document.getElementById("animal-name").textContent = currentScenario.animal;
-  document.getElementById("animal-continent").textContent = currentScenario.continent;
-  document.getElementById("animal-desc").textContent = currentScenario.description;
-  document.getElementById("scenario-number").textContent = gameState.gameSession.scenariosPlayed;
+  const animalNameElement = document.getElementById("animal-name");
+  const animalContinentElement = document.getElementById("animal-continent");
+  const animalDescElement = document.getElementById("animal-desc");
+  const scenarioNumberElement = document.getElementById("scenario-number");
+  const progressFillElement = document.getElementById("scenario-progress-fill");
+  
+  if (animalNameElement) animalNameElement.textContent = currentScenario.animal;
+  if (animalContinentElement) animalContinentElement.textContent = currentScenario.continent;
+  if (animalDescElement) animalDescElement.textContent = currentScenario.description;
+  if (scenarioNumberElement) scenarioNumberElement.textContent = gameState.gameSession.scenariosPlayed;
   
   // Update progress bar
-  const progressPercent = (gameState.gameSession.scenariosPlayed / 10) * 100;
-  document.getElementById("scenario-progress-fill").style.width = `${progressPercent}%`;
+  if (progressFillElement) {
+    const progressPercent = (gameState.gameSession.scenariosPlayed / 10) * 100;
+    progressFillElement.style.width = `${progressPercent}%`;
+  }
   
   // Load image with fallback
   const imgElement = document.getElementById("animal-img");
@@ -465,7 +498,10 @@ function handleAnswer(selectedOption, scenario) {
     if (gameState.gameSession.currentStreak > gameState.gameSession.bestStreak) {
       gameState.gameSession.bestStreak = gameState.gameSession.currentStreak;
       localStorage.setItem("wildlife_best_streak", gameState.gameSession.bestStreak);
-      document.getElementById('best-streak').textContent = gameState.gameSession.bestStreak;
+      const bestStreakElement = document.getElementById('best-streak');
+      if (bestStreakElement) {
+        bestStreakElement.textContent = gameState.gameSession.bestStreak;
+      }
     }
   } else {
     gameState.gameSession.currentStreak = 0;
@@ -663,64 +699,62 @@ function loadAnimalList() {
   const listDiv = document.getElementById("animal-list");
   if (!listDiv) return;
   
-  // Show loading state
-  listDiv.innerHTML = '<div class="loading-state">Loading animals...</div>';
+  // Clear the list
+  listDiv.innerHTML = "";
   
-  // Small delay for better UX
-  setTimeout(() => {
-    listDiv.innerHTML = "";
-    
-    const searchTerm = document.getElementById("animal-search")?.value.toLowerCase() || "";
-    const filterContinent = document.getElementById("continent-filter")?.value || "all";
-    
-    animalsInfo.forEach(animal => {
-      // Apply filters
-      if (searchTerm && !animal.name.toLowerCase().includes(searchTerm) && 
-          !animal.description.toLowerCase().includes(searchTerm)) {
-        return;
-      }
-      
-      if (filterContinent !== "all" && animal.continent !== filterContinent) {
-        return;
-      }
-      
-      const isUnlocked = gameState.unlockedAnimals.includes(animal.name);
-      
-      const animalItem = document.createElement("div");
-      animalItem.className = `animal-item ${isUnlocked ? '' : 'locked'}`;
-      animalItem.setAttribute("data-continent", animal.continent);
-      animalItem.setAttribute("data-unlocked", isUnlocked);
-      animalItem.onclick = function() { showAnimalDetails(animal); };
-      
-      // Add touch feedback
-      animalItem.addEventListener('touchstart', function() {
-        this.style.transform = 'scale(0.95)';
-      }, { passive: true });
-      
-      animalItem.addEventListener('touchend', function() {
-        this.style.transform = '';
-      }, { passive: true });
-      
-      animalItem.innerHTML = `
-        <img src="${animal.image || 'images/placeholder.png'}" alt="${animal.name}" class="animal-item-image" loading="lazy">
-        <div class="animal-item-info">
-          <div class="animal-item-name">${animal.name}</div>
-          <div class="animal-item-continent">${animal.continent}</div>
-          <div class="animal-item-status ${isUnlocked ? 'unlocked' : 'locked'}">
-            <i class="fas ${isUnlocked ? 'fa-unlock' : 'fa-lock'}"></i>
-            ${isUnlocked ? 'Unlocked' : 'Locked'}
-          </div>
-        </div>
-      `;
-      
-      listDiv.appendChild(animalItem);
-    });
-    
-    // If no animals match the filter
-    if (listDiv.children.length === 0) {
-      listDiv.innerHTML = '<div class="no-results">No animals found matching your search.</div>';
+  const searchInput = document.getElementById("animal-search");
+  const filterSelect = document.getElementById("continent-filter");
+  
+  const searchTerm = searchInput ? searchInput.value.toLowerCase() : "";
+  const filterContinent = filterSelect ? filterSelect.value : "all";
+  
+  animalsInfo.forEach(animal => {
+    // Apply filters
+    if (searchTerm && !animal.name.toLowerCase().includes(searchTerm) && 
+        !animal.description.toLowerCase().includes(searchTerm)) {
+      return;
     }
-  }, 100);
+    
+    if (filterContinent !== "all" && animal.continent !== filterContinent) {
+      return;
+    }
+    
+    const isUnlocked = gameState.unlockedAnimals.includes(animal.name);
+    
+    const animalItem = document.createElement("div");
+    animalItem.className = `animal-item ${isUnlocked ? '' : 'locked'}`;
+    animalItem.setAttribute("data-continent", animal.continent);
+    animalItem.setAttribute("data-unlocked", isUnlocked);
+    animalItem.onclick = function() { showAnimalDetails(animal); };
+    
+    // Add touch feedback
+    animalItem.addEventListener('touchstart', function() {
+      this.style.transform = 'scale(0.95)';
+    }, { passive: true });
+    
+    animalItem.addEventListener('touchend', function() {
+      this.style.transform = '';
+    }, { passive: true });
+    
+    animalItem.innerHTML = `
+      <img src="${animal.image || 'images/placeholder.png'}" alt="${animal.name}" class="animal-item-image" loading="lazy">
+      <div class="animal-item-info">
+        <div class="animal-item-name">${animal.name}</div>
+        <div class="animal-item-continent">${animal.continent}</div>
+        <div class="animal-item-status ${isUnlocked ? 'unlocked' : 'locked'}">
+          <i class="fas ${isUnlocked ? 'fa-unlock' : 'fa-lock'}"></i>
+          ${isUnlocked ? 'Unlocked' : 'Locked'}
+        </div>
+      </div>
+    `;
+    
+    listDiv.appendChild(animalItem);
+  });
+  
+  // If no animals match the filter
+  if (listDiv.children.length === 0) {
+    listDiv.innerHTML = '<div class="no-results" style="color: white; text-align: center; padding: 40px;">No animals found matching your search.</div>';
+  }
 }
 
 // Show animal details in separate screen
@@ -842,7 +876,8 @@ function showTutorial() {
 
 // Share rank
 function shareRank() {
-  const rank = document.getElementById("rank")?.textContent || "Beginner Observer";
+  const rankElement = document.getElementById("rank");
+  const rank = rankElement ? rankElement.textContent : "Beginner Observer";
   const score = gameState.userScore;
   const animalCount = gameState.unlockedAnimals.length;
   
@@ -903,7 +938,23 @@ function fallbackShare(text, url) {
 // Show notification
 function showNotification(title, message, type = "info") {
   const container = document.getElementById("notification-container");
-  if (!container) return;
+  if (!container) {
+    // Create notification container if it doesn't exist
+    const newContainer = document.createElement("div");
+    newContainer.id = "notification-container";
+    newContainer.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1001;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-width: 350px;
+    `;
+    document.body.appendChild(newContainer);
+    container = newContainer;
+  }
   
   const notification = document.createElement("div");
   notification.className = `notification ${type}`;
@@ -942,13 +993,16 @@ function getNotificationIcon(type) {
 // Initialize particles
 function initParticles() {
   particlesContainer = document.getElementById("particles-container");
-  if (!particlesContainer) return;
+  if (!particlesContainer) {
+    console.warn("Particles container not found");
+    return;
+  }
   
   // Clear existing particles
   particlesContainer.innerHTML = '';
   
   // Create particles based on screen size
-  const particleCount = Math.min(50, Math.floor((window.innerWidth * window.innerHeight) / 5000));
+  const particleCount = Math.min(30, Math.floor((window.innerWidth * window.innerHeight) / 10000));
   
   for (let i = 0; i < particleCount; i++) {
     createParticle();
@@ -963,7 +1017,7 @@ function createParticle() {
   particle.className = "particle";
   
   // Random properties
-  const size = Math.random() * 8 + 4;
+  const size = Math.random() * 6 + 3;
   const posX = Math.random() * 100;
   const posY = Math.random() * 100;
   const duration = Math.random() * 15 + 10;
@@ -971,13 +1025,15 @@ function createParticle() {
   
   // Apply styles
   particle.style.cssText = `
+    position: absolute;
     width: ${size}px;
     height: ${size}px;
     background: rgba(255, 255, 255, ${Math.random() * 0.1 + 0.05});
+    border-radius: 50%;
     left: ${posX}%;
     top: ${posY}%;
-    animation-duration: ${duration}s;
-    animation-delay: ${delay}s;
+    animation: float ${duration}s linear ${delay}s infinite;
+    pointer-events: none;
   `;
   
   particlesContainer.appendChild(particle);
@@ -1037,35 +1093,7 @@ function handleKeyboardShortcuts(e) {
   }
 }
 
-// Prevent double-tap zoom on mobile
-function preventDoubleTapZoom() {
-  let lastTouchEnd = 0;
-  document.addEventListener('touchend', function(event) {
-    const now = (new Date()).getTime();
-    if (now - lastTouchEnd <= 300) {
-      event.preventDefault();
-    }
-    lastTouchEnd = now;
-  }, { passive: false });
-}
-
-// Handle window resize
-window.addEventListener('resize', debounce(() => {
-  // Reinitialize particles on resize
-  if (particlesContainer) {
-    initParticles();
-  }
-}, 250));
-
-// Handle page visibility changes
-document.addEventListener('visibilitychange', function() {
-  if (!document.hidden && isInitialized) {
-    // Page became visible again, refresh data if needed
-    updateDisplay();
-  }
-});
-
-// Export utility functions for animals.js
+// Make utility functions available globally
 window.getAnimalByName = function(name) {
   return animalsInfo.find(animal => animal.name === name);
 };
