@@ -4,11 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Wildlife Survival Game</title>
+  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="style.css">
+  <!-- html2canvas for screenshots -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto+Slab:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css">
+  <!-- PWA Meta Tags -->
   <link rel="apple-touch-icon" href="images/icon.png">
   <meta name="theme-color" content="#0c3b2e">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -465,14 +471,32 @@
   <!-- Game Notification System -->
   <div id="notification-container"></div>
   
-  <!-- Loading Overlay -->
-  <div id="loading-overlay" class="screen-overlay">
-    <div class="loading-spinner">
-      <div class="spinner"></div>
-      <p>Loading Game...</p>
+  <!-- ===== NEW ELEMENTS FOR MOBILE OPTIMIZATIONS ===== -->
+  
+  <!-- Screenshot Overlay -->
+  <div id="screenshot-overlay" class="screenshot-overlay">
+    <img id="screenshot-preview" class="screenshot-preview" alt="Screenshot Preview">
+    <div class="screenshot-actions">
+      <button class="screenshot-btn screenshot-btn-secondary" onclick="closeScreenshotOverlay()">
+        <i class="fas fa-times"></i> Cancel
+      </button>
+      <button class="screenshot-btn screenshot-btn-primary" onclick="shareScreenshot()">
+        <i class="fas fa-share"></i> Share
+      </button>
     </div>
   </div>
   
+  <!-- Screenshot Button -->
+  <button id="share-screenshot-btn" class="share-screenshot-btn" onclick="takeScreenshot()" style="display: none;">
+    <i class="fas fa-camera"></i>
+  </button>
+  
+  <!-- Fixed Back Button for Animal Details -->
+  <button id="fixed-back-btn" class="fixed-back-button" onclick="backToAnimalList()" style="display: none;">
+    <i class="fas fa-arrow-left"></i> Back to Animal List
+  </button>
+  
+  <!-- Scripts -->
   <script src="scenarios.js"></script>
   <script src="animals.js"></script>
   <script src="main.js"></script>
