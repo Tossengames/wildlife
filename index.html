@@ -336,7 +336,7 @@
   <div id="animal-details-screen" class="screen">
     <div class="screen-container">
       <div class="details-header">
-        <button class="btn-back-small" onclick="backToAnimalList()">
+        <button class="btn-back-small" onclick="goBack()">
           <i class="fas fa-arrow-left"></i>
         </button>
         <h2 id="info-name">Moose</h2>
@@ -471,7 +471,7 @@
   <!-- Game Notification System -->
   <div id="notification-container"></div>
   
-  <!-- ===== NEW ELEMENTS FOR MOBILE OPTIMIZATIONS ===== -->
+  <!-- ===== NEW ELEMENTS ===== -->
   
   <!-- Screenshot Overlay -->
   <div id="screenshot-overlay" class="screenshot-overlay">
@@ -486,14 +486,14 @@
     </div>
   </div>
   
-  <!-- Screenshot Button -->
-  <button id="share-screenshot-btn" class="share-screenshot-btn" onclick="takeScreenshot()" style="display: none;">
-    <i class="fas fa-camera"></i>
+  <!-- Universal Back Button (shown only on encyclopedia screens) -->
+  <button id="universal-back-btn" class="fixed-back-button" onclick="goBack()">
+    <i class="fas fa-arrow-left"></i> Back
   </button>
   
-  <!-- Fixed Back Button for Animal Details -->
-  <button id="fixed-back-btn" class="fixed-back-button" onclick="backToAnimalList()" style="display: none;">
-    <i class="fas fa-arrow-left"></i> Back to Animal List
+  <!-- Screenshot Button -->
+  <button id="share-screenshot-btn" class="share-screenshot-btn" onclick="takeScreenshot()">
+    <i class="fas fa-camera"></i>
   </button>
   
   <!-- Scripts -->
