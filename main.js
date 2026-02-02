@@ -25,6 +25,8 @@ let currentScenario = null;
 let scenarioQueue = [];
 let isInitialized = false;
 
+// ===== INITIALIZATION =====
+
 // Initialize game when DOM is loaded
 document.addEventListener("DOMContentLoaded", function() {
   console.log("DOM Content Loaded - Starting initialization");
@@ -67,9 +69,19 @@ document.addEventListener("DOMContentLoaded", function() {
     continentFilter.addEventListener("change", loadAnimalList);
   }
   
+  // Add mobile optimization listeners
+  window.addEventListener('resize', adjustForMobile);
+  window.addEventListener('orientationchange', adjustForMobile);
+  
   isInitialized = true;
   
   console.log("Game initialized successfully");
+  
+  // Initialize mobile layout
+  setTimeout(adjustForMobile, 100);
+  
+  // Initialize screenshot button
+  setTimeout(updateScreenshotButton, 100);
   
   // Show welcome notification
   setTimeout(() => {
@@ -89,6 +101,8 @@ function debounce(func, wait) {
     timeout = setTimeout(later, wait);
   };
 }
+
+// ===== SCREEN MANAGEMENT =====
 
 // Hide all screens
 function hideAllScreens() {
@@ -114,6 +128,13 @@ function showScreen(id) {
     targetScreen.style.display = 'block';
     setTimeout(() => {
       targetScreen.classList.add('active');
+      
+      // Scroll to top of the new screen
+      if (id === 'scenario-screen') {
+        setTimeout(() => {
+          scrollToScenarioTop();
+        }, 50);
+      }
     }, 10);
     
     // Initialize screen-specific content
@@ -125,11 +146,23 @@ function showScreen(id) {
         loadAnimalList();
         break;
       case "animal-details-screen":
-        // Already handled by showAnimalDetails
+        // Show fixed back button after a delay
+        setTimeout(addFixedBackButton, 100);
         break;
       case "continent-screen":
         updateContinentProgress();
         break;
+    }
+    
+    // Update screenshot button visibility
+    updateScreenshotButton();
+    
+    // Remove fixed back button if not on details screen
+    if (id !== 'animal-details-screen') {
+      const fixedBtn = document.getElementById('fixed-back-btn');
+      if (fixedBtn) {
+        fixedBtn.style.display = 'none';
+      }
     }
   }
 }
@@ -169,6 +202,8 @@ function backToMenuFromFeedback() {
   showScreen("main-menu");
   updateDisplay();
 }
+
+// ===== GAME INITIALIZATION =====
 
 // Initialize game state and UI
 function initGame() {
@@ -227,6 +262,8 @@ function getAvailableScenarios() {
   });
 }
 
+// ===== DISPLAY FUNCTIONS =====
+
 // Update display elements
 function updateDisplay() {
   const scoreElement = document.getElementById("score");
@@ -271,6 +308,37 @@ function animateCounter(element, start, end, duration) {
     }
   }, stepTime);
 }
+
+// Update player rank
+function updateRank() {
+  let rank = "Beginner Observer";
+  let rankColor = "#95a5a6";
+  
+  if (gameState.userScore >= 100) {
+    rank = "Master Ranger";
+    rankColor = "#f39c12";
+  } else if (gameState.userScore >= 50) {
+    rank = "Wildlife Protector";
+    rankColor = "#3498db";
+  } else if (gameState.userScore >= 25) {
+    rank = "Field Guide";
+    rankColor = "#2ecc71";
+  } else if (gameState.userScore >= 10) {
+    rank = "Junior Ranger";
+    rankColor = "#9b59b6";
+  }
+  
+  const rankElement = document.getElementById("rank");
+  if (rankElement) {
+    rankElement.textContent = rank;
+    rankElement.style.color = rankColor;
+    
+    // Save rank to localStorage
+    localStorage.setItem("wildlife_rank", rank);
+  }
+}
+
+// ===== CONTINENT SELECTION =====
 
 // Show continent selection screen
 function showContinentSelect() {
@@ -332,6 +400,8 @@ function selectContinent(continent) {
   if (currentStreakElement) currentStreakElement.textContent = "0";
   if (sessionAccuracyElement) sessionAccuracyElement.textContent = "0%";
 }
+
+// ===== SCENARIO FUNCTIONS =====
 
 // Start random scenario
 function startScenario() {
@@ -459,6 +529,17 @@ function loadScenario() {
     
     optionsDiv.appendChild(button);
   });
+  
+  // Auto-scroll to top of scenario on mobile
+  setTimeout(() => {
+    scrollToScenarioTop();
+  }, 100);
+  
+  // Adjust layout for mobile
+  adjustForMobile();
+  
+  // Update screenshot button
+  updateScreenshotButton();
 }
 
 // Handle answer selection
@@ -582,35 +663,6 @@ function updateGameState() {
   updateRank();
 }
 
-// Update player rank
-function updateRank() {
-  let rank = "Beginner Observer";
-  let rankColor = "#95a5a6";
-  
-  if (gameState.userScore >= 100) {
-    rank = "Master Ranger";
-    rankColor = "#f39c12";
-  } else if (gameState.userScore >= 50) {
-    rank = "Wildlife Protector";
-    rankColor = "#3498db";
-  } else if (gameState.userScore >= 25) {
-    rank = "Field Guide";
-    rankColor = "#2ecc71";
-  } else if (gameState.userScore >= 10) {
-    rank = "Junior Ranger";
-    rankColor = "#9b59b6";
-  }
-  
-  const rankElement = document.getElementById("rank");
-  if (rankElement) {
-    rankElement.textContent = rank;
-    rankElement.style.color = rankColor;
-    
-    // Save rank to localStorage
-    localStorage.setItem("wildlife_rank", rank);
-  }
-}
-
 // Check for animal unlocks
 function checkForUnlocks() {
   let unlockedNewAnimal = false;
@@ -687,6 +739,8 @@ function showSessionSummary() {
     backToMenu();
   }, 2000);
 }
+
+// ===== ENCYCLOPEDIA FUNCTIONS =====
 
 // Show animal encyclopedia
 function showInfo() {
@@ -867,12 +921,22 @@ function populateList(elementId, items) {
 function backToAnimalList() {
   showScreen("info-screen");
   loadAnimalList();
+  
+  // Hide fixed back button
+  const fixedBtn = document.getElementById('fixed-back-btn');
+  if (fixedBtn) {
+    fixedBtn.style.display = 'none';
+  }
 }
+
+// ===== TUTORIAL =====
 
 // Show tutorial
 function showTutorial() {
   showScreen("tutorial-screen");
 }
+
+// ===== SHARING =====
 
 // Share rank
 function shareRank() {
@@ -935,9 +999,11 @@ function fallbackShare(text, url) {
   }
 }
 
+// ===== NOTIFICATIONS =====
+
 // Show notification
 function showNotification(title, message, type = "info") {
-  const container = document.getElementById("notification-container");
+  let container = document.getElementById("notification-container");
   if (!container) {
     // Create notification container if it doesn't exist
     const newContainer = document.createElement("div");
@@ -990,6 +1056,8 @@ function getNotificationIcon(type) {
   }
 }
 
+// ===== PARTICLES =====
+
 // Initialize particles
 function initParticles() {
   particlesContainer = document.getElementById("particles-container");
@@ -1039,6 +1107,8 @@ function createParticle() {
   particlesContainer.appendChild(particle);
 }
 
+// ===== SETTINGS =====
+
 // Load settings from localStorage
 function loadSettings() {
   const savedSettings = localStorage.getItem("wildlife_settings");
@@ -1055,6 +1125,237 @@ function loadSettings() {
 function saveSettings() {
   localStorage.setItem("wildlife_settings", JSON.stringify(gameState.settings));
 }
+
+// ===== MOBILE OPTIMIZATIONS =====
+
+// Auto-scroll to top when loading new scenario
+function scrollToScenarioTop() {
+  const scenarioScreen = document.getElementById('scenario-screen');
+  if (scenarioScreen && scenarioScreen.classList.contains('active')) {
+    // Scroll to the scenario header
+    const scenarioHeader = scenarioScreen.querySelector('.scenario-header');
+    if (scenarioHeader) {
+      scenarioHeader.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+}
+
+// Adjust layout for mobile
+function adjustForMobile() {
+  const isMobile = window.innerWidth <= 768;
+  
+  if (isMobile) {
+    // Reduce image sizes on mobile
+    const animalImages = document.querySelectorAll('.animal-image-container, .details-image-container');
+    animalImages.forEach(img => {
+      if (window.innerHeight < 800) {
+        img.style.height = '180px';
+      }
+    });
+    
+    // Adjust scenario description
+    const descriptions = document.querySelectorAll('.scenario-description');
+    descriptions.forEach(desc => {
+      if (window.innerHeight < 800) {
+        desc.style.minHeight = '100px';
+        desc.style.padding = '20px';
+        desc.style.fontSize = '1rem';
+      }
+    });
+  }
+}
+
+// Add fixed back button to animal details screen
+function addFixedBackButton() {
+  const detailsScreen = document.getElementById('animal-details-screen');
+  if (detailsScreen && detailsScreen.classList.contains('active')) {
+    const fixedBtn = document.getElementById('fixed-back-btn');
+    if (fixedBtn) {
+      fixedBtn.style.display = 'flex';
+      
+      // Position it above the share button
+      const shareBtn = document.getElementById('share-screenshot-btn');
+      if (shareBtn && shareBtn.style.display !== 'none') {
+        fixedBtn.style.bottom = '90px';
+      } else {
+        fixedBtn.style.bottom = '20px';
+      }
+    }
+  } else {
+    const fixedBtn = document.getElementById('fixed-back-btn');
+    if (fixedBtn) {
+      fixedBtn.style.display = 'none';
+    }
+  }
+}
+
+// Show/Hide share screenshot button
+function updateScreenshotButton() {
+  const shareBtn = document.getElementById('share-screenshot-btn');
+  if (!shareBtn) return;
+  
+  // Show on scenario screen and animal details screen
+  const scenarioScreen = document.getElementById('scenario-screen');
+  const detailsScreen = document.getElementById('animal-details-screen');
+  
+  if ((scenarioScreen && scenarioScreen.classList.contains('active')) ||
+      (detailsScreen && detailsScreen.classList.contains('active'))) {
+    shareBtn.style.display = 'flex';
+    
+    // Adjust position based on fixed back button
+    const fixedBtn = document.getElementById('fixed-back-btn');
+    if (fixedBtn && fixedBtn.style.display !== 'none') {
+      shareBtn.style.bottom = '90px';
+    } else {
+      shareBtn.style.bottom = '20px';
+    }
+  } else {
+    shareBtn.style.display = 'none';
+  }
+}
+
+// ===== SCREENSHOT FEATURE =====
+
+let currentScreenshot = null;
+
+function takeScreenshot() {
+  // Disable buttons temporarily
+  const shareBtn = document.getElementById('share-screenshot-btn');
+  const fixedBtn = document.getElementById('fixed-back-btn');
+  
+  if (shareBtn) shareBtn.style.opacity = '0.5';
+  if (fixedBtn) fixedBtn.style.opacity = '0.5';
+  
+  // Get the current active screen
+  const activeScreen = document.querySelector('.screen.active');
+  if (!activeScreen) return;
+  
+  // Show loading state
+  showNotification("Taking Screenshot", "Preparing your screenshot...", "info");
+  
+  // Use html2canvas library for better screenshots
+  if (typeof html2canvas === 'undefined') {
+    // Load html2canvas if not available
+    const script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+    script.onload = function() {
+      captureScreenshot(activeScreen);
+    };
+    document.head.appendChild(script);
+  } else {
+    captureScreenshot(activeScreen);
+  }
+}
+
+function captureScreenshot(element) {
+  const options = {
+    scale: 2, // Higher quality
+    useCORS: true,
+    allowTaint: true,
+    backgroundColor: null,
+    logging: false,
+    onclone: function(clonedDoc) {
+      // Remove floating buttons from screenshot
+      const shareBtn = clonedDoc.getElementById('share-screenshot-btn');
+      const fixedBtn = clonedDoc.getElementById('fixed-back-btn');
+      if (shareBtn) shareBtn.style.display = 'none';
+      if (fixedBtn) fixedBtn.style.display = 'none';
+    }
+  };
+  
+  html2canvas(element, options).then(canvas => {
+    // Convert canvas to image
+    currentScreenshot = canvas.toDataURL('image/png');
+    
+    // Show preview
+    const preview = document.getElementById('screenshot-preview');
+    const overlay = document.getElementById('screenshot-overlay');
+    
+    if (preview) {
+      preview.src = currentScreenshot;
+    }
+    
+    if (overlay) {
+      overlay.classList.add('active');
+      document.body.classList.add('no-scroll');
+    }
+    
+    // Re-enable buttons
+    const shareBtn = document.getElementById('share-screenshot-btn');
+    const fixedBtn = document.getElementById('fixed-back-btn');
+    if (shareBtn) shareBtn.style.opacity = '1';
+    if (fixedBtn) fixedBtn.style.opacity = '1';
+  }).catch(error => {
+    console.error('Screenshot error:', error);
+    showNotification("Error", "Failed to take screenshot", "error");
+    
+    // Re-enable buttons
+    const shareBtn = document.getElementById('share-screenshot-btn');
+    const fixedBtn = document.getElementById('fixed-back-btn');
+    if (shareBtn) shareBtn.style.opacity = '1';
+    if (fixedBtn) fixedBtn.style.opacity = '1';
+  });
+}
+
+function closeScreenshotOverlay() {
+  const overlay = document.getElementById('screenshot-overlay');
+  if (overlay) {
+    overlay.classList.remove('active');
+    document.body.classList.remove('no-scroll');
+  }
+}
+
+async function shareScreenshot() {
+  if (!currentScreenshot) {
+    showNotification("Error", "No screenshot available", "error");
+    return;
+  }
+  
+  try {
+    // Convert base64 to blob
+    const blob = await fetch(currentScreenshot).then(res => res.blob());
+    const file = new File([blob], 'wildlife-survival-screenshot.png', { type: 'image/png' });
+    
+    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({
+        files: [file],
+        title: 'Wildlife Survival Game',
+        text: `Check out my Wildlife Survival Game progress! Score: ${gameState.userScore}, Rank: ${document.getElementById('rank')?.textContent || 'Beginner'}`,
+      });
+      
+      showNotification("Shared!", "Screenshot shared successfully", "success");
+      closeScreenshotOverlay();
+    } else {
+      // Fallback: Download the image
+      const link = document.createElement('a');
+      link.href = currentScreenshot;
+      link.download = 'wildlife-survival-screenshot.png';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      showNotification("Downloaded", "Screenshot downloaded to your device", "success");
+      closeScreenshotOverlay();
+    }
+  } catch (error) {
+    console.error('Share error:', error);
+    
+    if (error.name !== 'AbortError') {
+      // Fallback to download if share fails
+      const link = document.createElement('a');
+      link.href = currentScreenshot;
+      link.download = 'wildlife-survival-screenshot.png';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      showNotification("Downloaded", "Screenshot downloaded to your device", "success");
+      closeScreenshotOverlay();
+    }
+  }
+}
+
+// ===== KEYBOARD SHORTCUTS =====
 
 // Handle keyboard shortcuts
 function handleKeyboardShortcuts(e) {
@@ -1092,6 +1393,8 @@ function handleKeyboardShortcuts(e) {
       break;
   }
 }
+
+// ===== UTILITY FUNCTIONS =====
 
 // Make utility functions available globally
 window.getAnimalByName = function(name) {
