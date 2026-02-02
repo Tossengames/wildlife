@@ -19,6 +19,9 @@ let gameState = {
   }
 };
 
+// Track screen history for back button
+let screenHistory = ["main-menu"];
+
 // Game Elements
 let particlesContainer = null;
 let currentScenario = null;
@@ -126,6 +129,12 @@ function showScreen(id) {
   const targetScreen = document.getElementById(id);
   if (targetScreen) {
     targetScreen.style.display = 'block';
+    
+    // Add to screen history if it's not already the current screen
+    if (screenHistory[screenHistory.length - 1] !== id) {
+      screenHistory.push(id);
+    }
+    
     setTimeout(() => {
       targetScreen.classList.add('active');
       
@@ -146,24 +155,56 @@ function showScreen(id) {
         loadAnimalList();
         break;
       case "animal-details-screen":
-        // Show fixed back button after a delay
-        setTimeout(addFixedBackButton, 100);
+        // Content already loaded by showAnimalDetails
         break;
       case "continent-screen":
         updateContinentProgress();
         break;
     }
     
+    // Update back button visibility
+    updateBackButton();
+    
     // Update screenshot button visibility
     updateScreenshotButton();
+  }
+}
+
+// Universal back function
+function goBack() {
+  if (screenHistory.length > 1) {
+    // Remove current screen from history
+    screenHistory.pop();
     
-    // Remove fixed back button if not on details screen
-    if (id !== 'animal-details-screen') {
-      const fixedBtn = document.getElementById('fixed-back-btn');
-      if (fixedBtn) {
-        fixedBtn.style.display = 'none';
-      }
+    // Go to previous screen
+    const previousScreen = screenHistory[screenHistory.length - 1];
+    showScreen(previousScreen);
+  } else {
+    // Fallback to main menu
+    backToMenu();
+  }
+}
+
+// Update back button visibility
+function updateBackButton() {
+  const backBtn = document.getElementById('universal-back-btn');
+  const currentScreen = screenHistory[screenHistory.length - 1];
+  
+  if (!backBtn) return;
+  
+  // Show back button only on encyclopedia screens
+  if (currentScreen === 'info-screen' || currentScreen === 'animal-details-screen') {
+    backBtn.style.display = 'flex';
+    
+    // Position it above screenshot button if screenshot button is visible
+    const screenshotBtn = document.getElementById('share-screenshot-btn');
+    if (screenshotBtn && screenshotBtn.style.display === 'flex') {
+      backBtn.style.bottom = '90px';
+    } else {
+      backBtn.style.bottom = '20px';
     }
+  } else {
+    backBtn.style.display = 'none';
   }
 }
 
@@ -192,6 +233,7 @@ function hideOverlay(id) {
 // Back to main menu
 function backToMenu() {
   console.log("Back to menu");
+  screenHistory = ["main-menu"];
   showScreen("main-menu");
   updateDisplay();
 }
@@ -199,8 +241,7 @@ function backToMenu() {
 // Special back function from feedback overlay
 function backToMenuFromFeedback() {
   hideOverlay("feedback-screen");
-  showScreen("main-menu");
-  updateDisplay();
+  backToMenu();
 }
 
 // ===== GAME INITIALIZATION =====
@@ -917,18 +958,6 @@ function populateList(elementId, items) {
   });
 }
 
-// Back to animal list from details screen
-function backToAnimalList() {
-  showScreen("info-screen");
-  loadAnimalList();
-  
-  // Hide fixed back button
-  const fixedBtn = document.getElementById('fixed-back-btn');
-  if (fixedBtn) {
-    fixedBtn.style.display = 'none';
-  }
-}
-
 // ===== TUTORIAL =====
 
 // Show tutorial
@@ -1165,30 +1194,6 @@ function adjustForMobile() {
   }
 }
 
-// Add fixed back button to animal details screen
-function addFixedBackButton() {
-  const detailsScreen = document.getElementById('animal-details-screen');
-  if (detailsScreen && detailsScreen.classList.contains('active')) {
-    const fixedBtn = document.getElementById('fixed-back-btn');
-    if (fixedBtn) {
-      fixedBtn.style.display = 'flex';
-      
-      // Position it above the share button
-      const shareBtn = document.getElementById('share-screenshot-btn');
-      if (shareBtn && shareBtn.style.display !== 'none') {
-        fixedBtn.style.bottom = '90px';
-      } else {
-        fixedBtn.style.bottom = '20px';
-      }
-    }
-  } else {
-    const fixedBtn = document.getElementById('fixed-back-btn');
-    if (fixedBtn) {
-      fixedBtn.style.display = 'none';
-    }
-  }
-}
-
 // Show/Hide share screenshot button
 function updateScreenshotButton() {
   const shareBtn = document.getElementById('share-screenshot-btn');
@@ -1202,9 +1207,9 @@ function updateScreenshotButton() {
       (detailsScreen && detailsScreen.classList.contains('active'))) {
     shareBtn.style.display = 'flex';
     
-    // Adjust position based on fixed back button
-    const fixedBtn = document.getElementById('fixed-back-btn');
-    if (fixedBtn && fixedBtn.style.display !== 'none') {
+    // Adjust position based on back button
+    const backBtn = document.getElementById('universal-back-btn');
+    if (backBtn && backBtn.style.display === 'flex') {
       shareBtn.style.bottom = '90px';
     } else {
       shareBtn.style.bottom = '20px';
@@ -1221,10 +1226,10 @@ let currentScreenshot = null;
 function takeScreenshot() {
   // Disable buttons temporarily
   const shareBtn = document.getElementById('share-screenshot-btn');
-  const fixedBtn = document.getElementById('fixed-back-btn');
+  const backBtn = document.getElementById('universal-back-btn');
   
   if (shareBtn) shareBtn.style.opacity = '0.5';
-  if (fixedBtn) fixedBtn.style.opacity = '0.5';
+  if (backBtn) backBtn.style.opacity = '0.5';
   
   // Get the current active screen
   const activeScreen = document.querySelector('.screen.active');
@@ -1257,9 +1262,9 @@ function captureScreenshot(element) {
     onclone: function(clonedDoc) {
       // Remove floating buttons from screenshot
       const shareBtn = clonedDoc.getElementById('share-screenshot-btn');
-      const fixedBtn = clonedDoc.getElementById('fixed-back-btn');
+      const backBtn = clonedDoc.getElementById('universal-back-btn');
       if (shareBtn) shareBtn.style.display = 'none';
-      if (fixedBtn) fixedBtn.style.display = 'none';
+      if (backBtn) backBtn.style.display = 'none';
     }
   };
   
@@ -1282,18 +1287,18 @@ function captureScreenshot(element) {
     
     // Re-enable buttons
     const shareBtn = document.getElementById('share-screenshot-btn');
-    const fixedBtn = document.getElementById('fixed-back-btn');
+    const backBtn = document.getElementById('universal-back-btn');
     if (shareBtn) shareBtn.style.opacity = '1';
-    if (fixedBtn) fixedBtn.style.opacity = '1';
+    if (backBtn) backBtn.style.opacity = '1';
   }).catch(error => {
     console.error('Screenshot error:', error);
     showNotification("Error", "Failed to take screenshot", "error");
     
     // Re-enable buttons
     const shareBtn = document.getElementById('share-screenshot-btn');
-    const fixedBtn = document.getElementById('fixed-back-btn');
+    const backBtn = document.getElementById('universal-back-btn');
     if (shareBtn) shareBtn.style.opacity = '1';
-    if (fixedBtn) fixedBtn.style.opacity = '1';
+    if (backBtn) backBtn.style.opacity = '1';
   });
 }
 
@@ -1316,17 +1321,25 @@ async function shareScreenshot() {
     const blob = await fetch(currentScreenshot).then(res => res.blob());
     const file = new File([blob], 'wildlife-survival-screenshot.png', { type: 'image/png' });
     
+    // Get game info for sharing
+    const rankElement = document.getElementById("rank");
+    const rank = rankElement ? rankElement.textContent : "Beginner";
+    const score = gameState.userScore;
+    const animalCount = gameState.unlockedAnimals.length;
+    
+    const shareText = `Check out my Wildlife Survival Game progress! 🐘🦌🦁\nRank: ${rank}\nScore: ${score}\nAnimals: ${animalCount}/12\n\nPlay the game here: ${window.location.href}`;
+    
     if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
       await navigator.share({
         files: [file],
-        title: 'Wildlife Survival Game',
-        text: `Check out my Wildlife Survival Game progress! Score: ${gameState.userScore}, Rank: ${document.getElementById('rank')?.textContent || 'Beginner'}`,
+        title: 'Wildlife Survival Game Screenshot',
+        text: shareText,
       });
       
       showNotification("Shared!", "Screenshot shared successfully", "success");
       closeScreenshotOverlay();
     } else {
-      // Fallback: Download the image
+      // Fallback: Create a download link with info
       const link = document.createElement('a');
       link.href = currentScreenshot;
       link.download = 'wildlife-survival-screenshot.png';
@@ -1334,7 +1347,14 @@ async function shareScreenshot() {
       link.click();
       document.body.removeChild(link);
       
-      showNotification("Downloaded", "Screenshot downloaded to your device", "success");
+      // Also copy game info to clipboard
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(shareText);
+        showNotification("Downloaded & Copied!", "Screenshot downloaded and game info copied to clipboard", "success");
+      } else {
+        showNotification("Downloaded", "Screenshot downloaded to your device", "success");
+      }
+      
       closeScreenshotOverlay();
     }
   } catch (error) {
@@ -1388,7 +1408,7 @@ function handleKeyboardShortcuts(e) {
       if (document.getElementById('feedback-screen')?.classList.contains('active')) {
         hideOverlay('feedback-screen');
       } else if (!document.getElementById('main-menu')?.classList.contains('active')) {
-        backToMenu();
+        goBack();
       }
       break;
   }
