@@ -1595,26 +1595,6 @@ body {
   line-height: 1.4;
 }
 
-/* Loading Overlay */
-#loading-overlay .loading-spinner {
-  text-align: center;
-  color: white;
-}
-
-.spinner {
-  width: 60px;
-  height: 60px;
-  border: 4px solid rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
-  border-top-color: #3498db;
-  animation: spin 1s linear infinite;
-  margin: 0 auto 20px;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
 /* Particle Animations */
 .particle {
   position: absolute;
@@ -1639,6 +1619,220 @@ body {
     transform: translateY(-100px) translateX(20px);
     opacity: 0;
   }
+}
+
+/* ===== NEW MOBILE OPTIMIZATIONS ===== */
+
+/* Mobile Optimizations */
+@media (max-height: 800px) and (max-width: 768px) {
+  .animal-image-container {
+    height: 180px !important;
+  }
+  
+  .details-image-container {
+    height: 180px !important;
+  }
+  
+  .scenario-description {
+    min-height: 100px !important;
+    padding: 20px !important;
+    font-size: 1rem !important;
+  }
+  
+  .animal-header {
+    padding: 15px 20px !important;
+  }
+  
+  .options-grid {
+    max-height: 50vh !important;
+  }
+  
+  .option-btn {
+    min-height: 65px !important;
+    padding: 15px !important;
+  }
+}
+
+/* Auto-scroll to top when new scenario loads */
+.scenario-screen {
+  scroll-behavior: smooth;
+}
+
+/* Fixed back button for animal details */
+#animal-details-screen .screen-container {
+  position: relative;
+  padding-bottom: 80px !important;
+}
+
+.fixed-back-button {
+  position: fixed !important;
+  bottom: 20px !important;
+  left: 20px !important;
+  right: 20px !important;
+  z-index: 100 !important;
+  width: calc(100% - 40px) !important;
+  max-width: 600px !important;
+  margin: 0 auto !important;
+  background: linear-gradient(135deg, #3498db, #2980b9) !important;
+  color: white !important;
+  border: none !important;
+  padding: 18px !important;
+  border-radius: 15px !important;
+  font-size: 1.1rem !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+}
+
+.fixed-back-button:active {
+  transform: scale(0.95) !important;
+}
+
+/* Share screenshot button */
+.share-screenshot-btn {
+  position: fixed !important;
+  bottom: 90px !important;
+  right: 20px !important;
+  width: 60px !important;
+  height: 60px !important;
+  border-radius: 50% !important;
+  background: linear-gradient(135deg, #2ecc71, #27ae60) !important;
+  color: white !important;
+  border: none !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 1.5rem !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+  z-index: 100 !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+}
+
+.share-screenshot-btn:active {
+  transform: scale(0.9) !important;
+}
+
+/* Screenshot overlay */
+.screenshot-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.screenshot-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.screenshot-preview {
+  max-width: 90%;
+  max-height: 70vh;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  margin-bottom: 20px;
+}
+
+.screenshot-actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.screenshot-btn {
+  padding: 15px 30px;
+  border: none;
+  border-radius: 15px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+}
+
+.screenshot-btn-primary {
+  background: linear-gradient(135deg, #2ecc71, #27ae60);
+  color: white;
+}
+
+.screenshot-btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.screenshot-btn:active {
+  transform: scale(0.95);
+}
+
+/* Compact mobile layout */
+@media (max-width: 768px) and (orientation: portrait) {
+  .menu-container,
+  .screen-container {
+    padding: 15px !important;
+  }
+  
+  .game-header {
+    padding: 20px 0 !important;
+  }
+  
+  .game-header h1 {
+    font-size: 1.8rem !important;
+  }
+  
+  .stats-panel {
+    margin: 15px !important;
+    padding: 20px !important;
+  }
+  
+  .stat-icon {
+    width: 50px !important;
+    height: 50px !important;
+    font-size: 1.5rem !important;
+  }
+  
+  .menu-actions {
+    margin: 20px 15px !important;
+    gap: 12px !important;
+  }
+  
+  .btn-action {
+    padding: 18px !important;
+    min-height: 65px !important;
+  }
+  
+  .social-actions {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Prevent body scroll when modal is open */
+body.no-scroll {
+  overflow: hidden !important;
+  position: fixed !important;
+  width: 100% !important;
+  height: 100% !important;
 }
 
 /* Responsive Design */
