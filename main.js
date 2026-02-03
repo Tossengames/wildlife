@@ -188,16 +188,26 @@ function goBack() {
   }
 }
 
-// Update back button visibility - MODIFIED FUNCTION
+// Update back button visibility - FIXED for encyclopedia
 function updateBackButton() {
   const backBtn = document.getElementById('encyclopedia-back-btn');
   const currentScreen = screenHistory[screenHistory.length - 1];
   
   if (!backBtn) return;
   
-  // Show back button only on encyclopedia screens
+  // Show back button ONLY on encyclopedia screens
   if (currentScreen === 'info-screen' || currentScreen === 'animal-details-screen') {
     backBtn.style.display = 'flex';
+    
+    // Check if screenshot button is also visible
+    const screenshotBtn = document.getElementById('share-screenshot-btn');
+    if (screenshotBtn && screenshotBtn.style.display === 'flex') {
+      backBtn.style.bottom = '80px';
+      backBtn.classList.add('with-screenshot');
+    } else {
+      backBtn.style.bottom = '20px';
+      backBtn.classList.remove('with-screenshot');
+    }
   } else {
     backBtn.style.display = 'none';
   }
@@ -782,6 +792,11 @@ function showSessionSummary() {
 function showInfo() {
   showScreen("info-screen");
   loadAnimalList();
+  
+  // Force update back button to show
+  setTimeout(() => {
+    updateBackButton();
+  }, 100);
 }
 
 // Load animal list in encyclopedia
@@ -937,6 +952,11 @@ function showAnimalDetails(animal) {
     dangerLevelText.textContent = dangerConfig.text;
     dangerLevelText.style.color = dangerConfig.color;
   }
+  
+  // Force update back button to show
+  setTimeout(() => {
+    updateBackButton();
+  }, 100);
 }
 
 // Populate list element
@@ -1189,7 +1209,7 @@ function adjustForMobile() {
   }
 }
 
-// Update screenshot button visibility - MODIFIED FUNCTION
+// Update screenshot button visibility
 function updateScreenshotButton() {
   const shareBtn = document.getElementById('share-screenshot-btn');
   if (!shareBtn) return;
@@ -1205,7 +1225,7 @@ function updateScreenshotButton() {
     // Adjust position based on back button
     const backBtn = document.getElementById('encyclopedia-back-btn');
     if (backBtn && backBtn.style.display === 'flex') {
-      shareBtn.style.bottom = '70px';
+      shareBtn.style.bottom = '80px';
     } else {
       shareBtn.style.bottom = '20px';
     }
