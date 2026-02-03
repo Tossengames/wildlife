@@ -76,6 +76,9 @@ document.addEventListener("DOMContentLoaded", function() {
   window.addEventListener('resize', adjustForMobile);
   window.addEventListener('orientationchange', adjustForMobile);
   
+  // Add keyboard shortcuts
+  document.addEventListener('keydown', handleKeyboardShortcuts);
+  
   isInitialized = true;
   
   console.log("Game initialized successfully");
@@ -185,9 +188,9 @@ function goBack() {
   }
 }
 
-// Update back button visibility
+// Update back button visibility - MODIFIED FUNCTION
 function updateBackButton() {
-  const backBtn = document.getElementById('universal-back-btn');
+  const backBtn = document.getElementById('encyclopedia-back-btn');
   const currentScreen = screenHistory[screenHistory.length - 1];
   
   if (!backBtn) return;
@@ -195,14 +198,6 @@ function updateBackButton() {
   // Show back button only on encyclopedia screens
   if (currentScreen === 'info-screen' || currentScreen === 'animal-details-screen') {
     backBtn.style.display = 'flex';
-    
-    // Position it above screenshot button if screenshot button is visible
-    const screenshotBtn = document.getElementById('share-screenshot-btn');
-    if (screenshotBtn && screenshotBtn.style.display === 'flex') {
-      backBtn.style.bottom = '90px';
-    } else {
-      backBtn.style.bottom = '20px';
-    }
   } else {
     backBtn.style.display = 'none';
   }
@@ -1194,7 +1189,7 @@ function adjustForMobile() {
   }
 }
 
-// Show/Hide share screenshot button
+// Update screenshot button visibility - MODIFIED FUNCTION
 function updateScreenshotButton() {
   const shareBtn = document.getElementById('share-screenshot-btn');
   if (!shareBtn) return;
@@ -1208,9 +1203,9 @@ function updateScreenshotButton() {
     shareBtn.style.display = 'flex';
     
     // Adjust position based on back button
-    const backBtn = document.getElementById('universal-back-btn');
+    const backBtn = document.getElementById('encyclopedia-back-btn');
     if (backBtn && backBtn.style.display === 'flex') {
-      shareBtn.style.bottom = '90px';
+      shareBtn.style.bottom = '70px';
     } else {
       shareBtn.style.bottom = '20px';
     }
@@ -1226,7 +1221,7 @@ let currentScreenshot = null;
 function takeScreenshot() {
   // Disable buttons temporarily
   const shareBtn = document.getElementById('share-screenshot-btn');
-  const backBtn = document.getElementById('universal-back-btn');
+  const backBtn = document.getElementById('encyclopedia-back-btn');
   
   if (shareBtn) shareBtn.style.opacity = '0.5';
   if (backBtn) backBtn.style.opacity = '0.5';
@@ -1262,7 +1257,7 @@ function captureScreenshot(element) {
     onclone: function(clonedDoc) {
       // Remove floating buttons from screenshot
       const shareBtn = clonedDoc.getElementById('share-screenshot-btn');
-      const backBtn = clonedDoc.getElementById('universal-back-btn');
+      const backBtn = clonedDoc.getElementById('encyclopedia-back-btn');
       if (shareBtn) shareBtn.style.display = 'none';
       if (backBtn) backBtn.style.display = 'none';
     }
@@ -1287,7 +1282,7 @@ function captureScreenshot(element) {
     
     // Re-enable buttons
     const shareBtn = document.getElementById('share-screenshot-btn');
-    const backBtn = document.getElementById('universal-back-btn');
+    const backBtn = document.getElementById('encyclopedia-back-btn');
     if (shareBtn) shareBtn.style.opacity = '1';
     if (backBtn) backBtn.style.opacity = '1';
   }).catch(error => {
@@ -1296,7 +1291,7 @@ function captureScreenshot(element) {
     
     // Re-enable buttons
     const shareBtn = document.getElementById('share-screenshot-btn');
-    const backBtn = document.getElementById('universal-back-btn');
+    const backBtn = document.getElementById('encyclopedia-back-btn');
     if (shareBtn) shareBtn.style.opacity = '1';
     if (backBtn) backBtn.style.opacity = '1';
   });
