@@ -1658,7 +1658,9 @@ body {
   scroll-behavior: smooth;
 }
 
-/* ENCYCLOPEDIA BACK BUTTON - Only shows on encyclopedia screens */
+/* ===== ENCYCLOPEDIA BOTTOM BACK BUTTON FIX ===== */
+
+/* ENCYCLOPEDIA BACK BUTTON - ALWAYS visible at bottom on encyclopedia screens */
 #encyclopedia-back-btn {
   position: fixed !important;
   bottom: 20px !important;
@@ -1688,6 +1690,17 @@ body {
 
 #encyclopedia-back-btn:active {
   transform: translateX(-50%) scale(0.95) !important;
+}
+
+/* EXTRA BOTTOM PADDING for encyclopedia screens to make room for button */
+#info-screen .screen-container,
+#animal-details-screen .screen-container {
+  padding-bottom: 80px !important;
+}
+
+/* Adjust button position when screenshot button is also visible */
+#encyclopedia-back-btn.with-screenshot {
+  bottom: 80px !important;
 }
 
 /* Share screenshot button */
