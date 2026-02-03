@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Wildlife Survival Game</title>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- html2canvas for screenshots -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto+Slab:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css">
+  <!-- PWA Meta Tags -->
+  <link rel="apple-touch-icon" href="images/icon.png">
+  <meta name="theme-color" content="#0c3b2e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+</head>
+<body>
+  <!-- Particle Container -->
+  <div id="particles-container"></div>
+  
+  <!-- Main Menu -->
+  <div id="main-menu" class="screen active">
+    <div class="menu-container">
+      <header class="game-header">
+        <div class="logo-container">
+          <div class="logo-icon">
+            <i class="fas fa-paw"></i>
+            <i class="fas fa-mountain"></i>
+          </div>
+          <h1>Wildlife Survival</h1>
+          <p class="tagline">Test your wildlife knowledge in challenging scenarios</p>
+        </div>
+      </header>
+      
+      <div class="stats-panel">
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-icon">
+              <i class="fas fa-trophy"></i>
+            </div>
+            <div class="stat-content">
+              <span class="stat-label">Rank</span>
+              <span id="rank" class="stat-value">Beginner</span>
+            </div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-icon">
+              <i class="fas fa-star"></i>
+            </div>
+            <div class="stat-content">
+              <span class="stat-label">Score</span>
+              <span id="score" class="stat-value">0</span>
+            </div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-icon">
+              <i class="fas fa-globe-americas"></i>
+            </div>
+            <div class="stat-content">
+              <span class="stat-label">Animals</span>
+              <span id="animal-count" class="stat-value">1/12</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="menu-actions">
+        <button class="btn-action btn-primary" onclick="startScenario()">
+          <i class="fas fa-play-circle"></i>
+          <span>Quick Play</span>
+        </button>
+        
+        <button class="btn-action btn-secondary" onclick="showContinentSelect()">
+          <i class="fas fa-globe-americas"></i>
+          <span>Select Continent</span>
+        </button>
+        
+        <button class="btn-action btn-info" onclick="showInfo()">
+          <i class="fas fa-book-open"></i>
+          <span>Encyclopedia</span>
+        </button>
+        
+        <button class="btn-action btn-success" onclick="showTutorial()">
+          <i class="fas fa-graduation-cap"></i>
+          <span>Tutorial</span>
+        </button>
+        
+        <div class="social-actions">
+          <button class="btn-action btn-warning" onclick="shareRank()">
+            <i class="fas fa-share-alt"></i>
+            <span>Share</span>
+          </button>
+          
+          <a href="https://ko-fi.com/yourusername" target="_blank" class="support-link">
+            <button class="btn-action btn-support">
+              <i class="fas fa-heart"></i>
+              <span>Support</span>
+            </button>
+          </a>
+        </div>
+      </div>
+      
+      <footer class="game-footer">
+        <p>Learn wildlife safety through interactive scenarios</p>
+        <p class="copyright">© 2024 Wildlife Survival Game</p>
+      </footer>
+    </div>
+  </div>
+  
+  <!-- Continent Selection Screen -->
+  <div id="continent-screen" class="screen">
+    <div class="screen-container">
+      <div class="screen-header">
+        <button class="btn-back-small" onclick="backToMenu()">
+          <i class="fas fa-arrow-left"></i>
+        </button>
+        <h2>Select Continent</h2>
+        <div class="header-spacer"></div>
+      </div>
+      <p class="screen-subtitle">Focus your training on specific regions</p>
+      
+      <div class="continents-grid">
+        <div class="continent-card" data-continent="Africa" onclick="selectContinent('Africa')">
+          <div class="continent-icon">
+            <i class="fas fa-globe-africa"></i>
+          </div>
+          <h3>Africa</h3>
+          <p>Lions, Elephants, Rhinos</p>
+          <div class="continent-progress">
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 20%"></div>
+            </div>
+            <span class="progress-text">1/5 animals</span>
+          </div>
+        </div>
+        
+        <div class="continent-card" data-continent="North America" onclick="selectContinent('North America')">
+          <div class="continent-icon">
+            <i class="fas fa-globe-americas"></i>
+          </div>
+          <h3>North America</h3>
+          <p>Bears, Moose, Wolves</p>
+          <div class="continent-progress">
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 50%"></div>
+            </div>
+            <span class="progress-text">2/4 animals</span>
+          </div>
+        </div>
+        
+        <div class="continent-card" data-continent="Asia" onclick="selectContinent('Asia')">
+          <div class="continent-icon">
+            <i class="fas fa-globe-asia"></i>
+          </div>
+          <h3>Asia</h3>
+          <p>Tigers, Pandas, Monkeys</p>
+          <div class="continent-progress">
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 0%"></div>
+            </div>
+            <span class="progress-text">0/3 animals</span>
+          </div>
+        </div>
+        
+        <div class="continent-card" data-continent="Random" onclick="selectContinent('Random')">
+          <div class="continent-icon">
+            <i class="fas fa-random"></i>
+          </div>
+          <h3>Random Mix</h3>
+          <p>All animals mixed</p>
+          <div class="continent-progress">
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 30%"></div>
+            </div>
+            <span class="progress-text">3/12 animals</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Scenario Screen -->
+  <div id="scenario-screen" class="screen">
+    <div class="screen-container">
+      <div class="scenario-header">
+        <div class="header-top">
+          <button class="btn-back-small" onclick="backToMenu()">
+            <i class="fas fa-home"></i>
+          </button>
+          <div class="scenario-progress">
+            <span class="progress-text">Scenario <span id="scenario-number">1</span>/10</span>
+            <div class="progress-bar">
+              <div class="progress-fill" id="scenario-progress-fill" style="width: 10%"></div>
+            </div>
+          </div>
+          <div class="scenario-score">
+            <i class="fas fa-star"></i>
+            <span id="current-score">0</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="animal-card">
+        <div class="animal-header">
+          <div class="animal-title">
+            <h2 id="animal-name">Moose</h2>
+            <span class="animal-continent" id="animal-continent">North America</span>
+          </div>
+          <div class="danger-level" id="danger-level">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span>Medium Danger</span>
+          </div>
+        </div>
+        
+        <div class="animal-image-container">
+          <img id="animal-img" src="images/moose.png" alt="Animal" class="animal-image">
+          <div class="image-overlay"></div>
+        </div>
+        
+        <div class="scenario-description">
+          <p id="animal-desc">You're hiking in a North American forest when you encounter a large moose. It's staring directly at you with its ears forward, hooves pawing the ground aggressively. Its eyes are wide and focused on your movement.</p>
+        </div>
+        
+        <div class="situation-tags">
+          <span class="tag"><i class="fas fa-exclamation-circle"></i> Aggressive Signs</span>
+          <span class="tag"><i class="fas fa-brain"></i> Decision Required</span>
+          <span class="tag"><i class="fas fa-stopwatch"></i> Quick Response</span>
+        </div>
+      </div>
+      
+      <div class="options-container">
+        <h3><i class="fas fa-question-circle"></i> What should you do?</h3>
+        <div id="options" class="options-grid">
+          <!-- Options will be dynamically added here -->
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Feedback Screen Overlay -->
+  <div id="feedback-screen" class="screen-overlay">
+    <div class="feedback-modal">
+      <div class="feedback-header">
+        <div class="feedback-icon" id="feedback-icon">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="feedback-title-container">
+          <h3 id="feedback-title">Correct Answer!</h3>
+          <div class="feedback-score-change" id="score-change">+10 points</div>
+        </div>
+      </div>
+      
+      <div class="feedback-content">
+        <div class="explanation-section">
+          <h4><i class="fas fa-lightbulb"></i> Explanation</h4>
+          <p id="feedback-text"></p>
+        </div>
+        
+        <div class="unlock-notification" id="unlock-notification">
+          <i class="fas fa-unlock-alt"></i>
+          <div class="unlock-content">
+            <strong>New Animal Unlocked!</strong>
+            <span id="unlock-message">Check your encyclopedia</span>
+          </div>
+        </div>
+        
+        <div class="session-stats">
+          <div class="stat">
+            <span class="stat-label">Current Streak</span>
+            <span class="stat-value" id="current-streak">0</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Session Accuracy</span>
+            <span class="stat-value" id="session-accuracy">0%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Best Streak</span>
+            <span class="stat-value" id="best-streak">0</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="feedback-actions">
+        <button class="btn-secondary" onclick="backToMenuFromFeedback()">
+          <i class="fas fa-home"></i>
+          <span>Menu</span>
+        </button>
+        <button class="btn-primary" onclick="nextScenario()">
+          <i class="fas fa-forward"></i>
+          <span>Next</span>
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Encyclopedia Screen -->
+  <div id="info-screen" class="screen">
+    <div class="screen-container">
+      <div class="screen-header">
+        <button class="btn-back-small" onclick="backToMenu()">
+          <i class="fas fa-arrow-left"></i>
+        </button>
+        <h2>Animal Encyclopedia</h2>
+        <div class="header-spacer"></div>
+      </div>
+      <p class="screen-subtitle">Study animal behavior and survival tips</p>
+      
+      <div class="encyclopedia-controls">
+        <div class="search-container">
+          <i class="fas fa-search"></i>
+          <input type="text" id="animal-search" placeholder="Search animals...">
+        </div>
+        <div class="filter-container">
+          <select id="continent-filter">
+            <option value="all">All Continents</option>
+            <option value="Africa">Africa</option>
+            <option value="North America">North America</option>
+            <option value="Asia">Asia</option>
+          </select>
+        </div>
+      </div>
+      
+      <div id="animal-list" class="animal-list">
+        <!-- Animal list will be dynamically added here -->
+      </div>
+    </div>
+  </div>
+  
+  <!-- Animal Details Screen -->
+  <div id="animal-details-screen" class="screen">
+    <div class="screen-container">
+      <div class="details-header">
+        <button class="btn-back-small" onclick="goBack()">
+          <i class="fas fa-arrow-left"></i>
+        </button>
+        <h2 id="info-name">Moose</h2>
+        <span class="detail-continent" id="info-continent">North America</span>
+      </div>
+      
+      <div class="details-content">
+        <div class="details-image-container">
+          <img id="info-img" src="images/moose.png" alt="Animal" class="details-image">
+          <div class="details-overlay"></div>
+          <div class="animal-status" id="animal-status">
+            <i class="fas fa-unlock"></i>
+            <span>Unlocked</span>
+          </div>
+        </div>
+        
+        <div class="details-text">
+          <div class="detail-section">
+            <h3>Description</h3>
+            <p id="info-desc" class="detail-description"></p>
+          </div>
+          
+          <div class="details-grid">
+            <div class="detail-section">
+              <h4><i class="fas fa-exclamation-triangle"></i> Signs of Aggression</h4>
+              <ul id="info-signs" class="detail-list"></ul>
+            </div>
+            
+            <div class="detail-section">
+              <h4><i class="fas fa-bolt"></i> Common Triggers</h4>
+              <ul id="info-triggers" class="detail-list"></ul>
+            </div>
+            
+            <div class="detail-section">
+              <h4><i class="fas fa-shield-alt"></i> Survival Tips</h4>
+              <ul id="info-tips" class="detail-list"></ul>
+            </div>
+          </div>
+          
+          <div class="details-grid">
+            <div class="detail-section">
+              <h4><i class="fas fa-chart-bar"></i> Statistics</h4>
+              <div class="stats-grid">
+                <div class="stat-item">
+                  <span class="stat-label">Danger Level</span>
+                  <div class="danger-bar-container">
+                    <div class="danger-bar" id="danger-bar"></div>
+                  </div>
+                  <span class="danger-level-text" id="danger-level-text">Medium</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-label">Weight</span>
+                  <span class="stat-value" id="info-weight">400-700 kg</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-label">Speed</span>
+                  <span class="stat-value" id="info-speed">35 mph</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-label">Scientific Name</span>
+                  <span class="stat-value" id="info-scientific-name">Alces alces</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="detail-section">
+              <h4><i class="fas fa-info-circle"></i> Fun Fact</h4>
+              <p id="info-funfact" class="fun-fact"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Tutorial Screen -->
+  <div id="tutorial-screen" class="screen">
+    <div class="screen-container">
+      <div class="screen-header">
+        <button class="btn-back-small" onclick="backToMenu()">
+          <i class="fas fa-arrow-left"></i>
+        </button>
+        <h2>How to Play</h2>
+        <div class="header-spacer"></div>
+      </div>
+      
+      <div class="tutorial-steps">
+        <div class="tutorial-card">
+          <div class="tutorial-icon">1</div>
+          <h3>Select a Continent</h3>
+          <p>Choose a region to focus on specific wildlife or pick "Random Mix" for variety.</p>
+        </div>
+        
+        <div class="tutorial-card">
+          <div class="tutorial-icon">2</div>
+          <h3>Read the Scenario</h3>
+          <p>Carefully read the wildlife encounter description and observe the animal's behavior.</p>
+        </div>
+        
+        <div class="tutorial-card">
+          <div class="tutorial-icon">3</div>
+          <h3>Choose Your Action</h3>
+          <p>Select the best response based on the animal's behavior and known survival tips.</p>
+        </div>
+        
+        <div class="tutorial-card">
+          <div class="tutorial-icon">4</div>
+          <h3>Learn and Progress</h3>
+          <p>Get feedback on your choice, earn points, unlock new animals, and increase your rank.</p>
+        </div>
+      </div>
+      
+      <div class="tutorial-tips">
+        <h3><i class="fas fa-lightbulb"></i> Pro Tips</h3>
+        <ul>
+          <li>Study animals in the Encyclopedia before playing</li>
+          <li>Unlock animals by reaching certain scores</li>
+          <li>Your highest rank is saved automatically</li>
+          <li>Read explanations carefully for survival info</li>
+        </ul>
+      </div>
+      
+      <div class="tutorial-actions">
+        <button class="btn-primary" onclick="backToMenu()">
+          <i class="fas fa-play-circle"></i>
+          <span>Start Playing</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Game Notification System -->
+  <div id="notification-container"></div>
+  
+  <!-- ===== NEW ELEMENTS ===== -->
+  
+  <!-- Screenshot Overlay -->
+  <div id="screenshot-overlay" class="screenshot-overlay">
+    <img id="screenshot-preview" class="screenshot-preview" alt="Screenshot Preview">
+    <div class="screenshot-actions">
+      <button class="screenshot-btn screenshot-btn-secondary" onclick="closeScreenshotOverlay()">
+        <i class="fas fa-times"></i> Cancel
+      </button>
+      <button class="screenshot-btn screenshot-btn-primary" onclick="shareScreenshot()">
+        <i class="fas fa-share"></i> Share
+      </button>
+    </div>
+  </div>
+  
+  <!-- Universal Back Button (shown only on encyclopedia screens) -->
+  <button id="universal-back-btn" class="fixed-back-button" onclick="goBack()">
+    <i class="fas fa-arrow-left"></i> Back
+  </button>
+  
+  <!-- Screenshot Button -->
+  <button id="share-screenshot-btn" class="share-screenshot-btn" onclick="takeScreenshot()">
+    <i class="fas fa-camera"></i>
+  </button>
+  
+  <!-- Scripts -->
+  <script src="scenarios.js"></script>
+  <script src="animals.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
