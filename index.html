@@ -302,7 +302,6 @@
   <!-- Encyclopedia Screen -->
   <div id="info-screen" class="screen">
     <div class="screen-container">
-      <!-- REMOVED TOP BACK BUTTON - Only header with spacers -->
       <div class="screen-header">
         <div class="header-spacer"></div>
         <h2>Animal Encyclopedia</h2>
@@ -335,7 +334,6 @@
   <div id="animal-details-screen" class="screen">
     <div class="screen-container">
       <div class="details-header">
-        <!-- KEEP top back button here for navigation between animals -->
         <button class="btn-back-small" onclick="goBack()">
           <i class="fas fa-arrow-left"></i>
         </button>
@@ -486,7 +484,7 @@
     </div>
   </div>
   
-  <!-- Encyclopedia Back Button (ALWAYS visible at bottom on encyclopedia screens) -->
+  <!-- ENCYCLOPEDIA BACK BUTTON (Only shows on info-screen and animal-details-screen) -->
   <button id="encyclopedia-back-btn" onclick="backToMenu()">
     <i class="fas fa-home"></i> Back to Menu
   </button>
