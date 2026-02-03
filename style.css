@@ -1990,3 +1990,76 @@ button {
 body {
   overscroll-behavior-y: contain;
 }
+
+/* Add these styles at the END of your existing style.css file */
+
+/* ===== ENCYCLOPEDIA BACK BUTTON ===== */
+/* This button only shows on encyclopedia screens */
+#encyclopedia-back-btn {
+  position: fixed !important;
+  bottom: 20px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  z-index: 1000 !important;
+  width: calc(100% - 40px) !important;
+  max-width: 300px !important;
+  background: linear-gradient(135deg, #3498db, #2980b9) !important;
+  color: white !important;
+  border: none !important;
+  padding: 14px 20px !important;
+  border-radius: 12px !important;
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  display: none !important; /* Hidden by default */
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  transition: all 0.3s ease !important;
+}
+
+#encyclopedia-back-btn:active {
+  transform: translateX(-50%) scale(0.95) !important;
+}
+
+#encyclopedia-back-btn i {
+  font-size: 1.1rem !important;
+}
+
+/* Add bottom padding to encyclopedia screens to make room for the button */
+#info-screen .screen-container,
+#animal-details-screen .screen-container {
+  padding-bottom: 90px !important;
+}
+
+/* Adjust position when screenshot button is visible */
+#encyclopedia-back-btn.with-screenshot {
+  bottom: 80px !important;
+}
+
+/* Ensure the screenshot button is above the back button */
+.share-screenshot-btn {
+  z-index: 1001 !important;
+}
+
+/* Mobile optimization for back button */
+@media (max-width: 768px) {
+  #encyclopedia-back-btn {
+    width: calc(100% - 30px) !important;
+    padding: 12px 16px !important;
+    font-size: 0.95rem !important;
+    bottom: max(15px, env(safe-area-inset-bottom, 15px)) !important;
+  }
+  
+  #info-screen .screen-container,
+  #animal-details-screen .screen-container {
+    padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+  
+  #encyclopedia-back-btn.with-screenshot {
+    bottom: 70px !important;
+  }
+}
