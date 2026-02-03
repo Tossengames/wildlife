@@ -166,7 +166,7 @@ function showScreen(id) {
     }
     
     // Update back button visibility
-    updateBackButton();
+    updateEncyclopediaBackButton();
     
     // Update screenshot button visibility
     updateScreenshotButton();
@@ -188,8 +188,8 @@ function goBack() {
   }
 }
 
-// Update back button visibility - FIXED for encyclopedia
-function updateBackButton() {
+// Update encyclopedia back button visibility
+function updateEncyclopediaBackButton() {
   const backBtn = document.getElementById('encyclopedia-back-btn');
   const currentScreen = screenHistory[screenHistory.length - 1];
   
@@ -793,10 +793,8 @@ function showInfo() {
   showScreen("info-screen");
   loadAnimalList();
   
-  // Force update back button to show
-  setTimeout(() => {
-    updateBackButton();
-  }, 100);
+  // Update back button to show
+  updateEncyclopediaBackButton();
 }
 
 // Load animal list in encyclopedia
@@ -953,10 +951,8 @@ function showAnimalDetails(animal) {
     dangerLevelText.style.color = dangerConfig.color;
   }
   
-  // Force update back button to show
-  setTimeout(() => {
-    updateBackButton();
-  }, 100);
+  // Update back button to show
+  updateEncyclopediaBackButton();
 }
 
 // Populate list element
