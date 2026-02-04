@@ -1443,3 +1443,22 @@ window.getUnlockedAnimals = function() {
 window.getLockedAnimals = function() {
   return animalsInfo.filter(animal => !gameState.unlockedAnimals.includes(animal.name));
 };
+
+// Show/hide encyclopedia back button
+function updateBackButton() {
+  const backBtn = document.getElementById('encyclopedia-back-btn');
+  if (!backBtn) return;
+  
+  const infoScreen = document.getElementById('info-screen');
+  const detailsScreen = document.getElementById('animal-details-screen');
+  
+  if ((infoScreen && infoScreen.classList.contains('active')) ||
+      (detailsScreen && detailsScreen.classList.contains('active'))) {
+    backBtn.style.display = 'flex';
+  } else {
+    backBtn.style.display = 'none';
+  }
+}
+
+// Check every second
+setInterval(updateBackButton, 1000);
