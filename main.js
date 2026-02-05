@@ -80,8 +80,8 @@ document.addEventListener("DOMContentLoaded", function() {
   // Initialize mobile layout
   setTimeout(adjustForMobile, 100);
   
-  // Initialize screenshot button
-  setTimeout(updateScreenshotButton, 100);
+  // Initialize floating buttons
+  setTimeout(updateFloatingButtons, 100);
   
   // Show welcome notification
   setTimeout(() => {
@@ -125,13 +125,15 @@ function showScreen(id) {
       case "info-screen":
         loadAnimalList();
         break;
+      case "animal-details-screen":
+        break;
       case "continent-screen":
         updateContinentProgress();
         break;
     }
     
-    // Update screenshot button visibility
-    updateScreenshotButton();
+    // Update floating buttons visibility
+    updateFloatingButtons();
   }
 }
 
@@ -157,7 +159,7 @@ function hideOverlay(id) {
   }
 }
 
-// Back to main menu - SIMPLE VERSION
+// Back to main menu
 function backToMenu() {
   console.log("Back to menu");
   showScreen("main-menu");
@@ -303,6 +305,48 @@ function updateRank() {
     
     // Save rank to localStorage
     localStorage.setItem("wildlife_rank", rank);
+  }
+}
+
+// ===== FLOATING BUTTONS CONTROL =====
+
+// Show/Hide floating buttons
+function updateFloatingButtons() {
+  const menuBtn = document.getElementById('back-to-menu-btn');
+  const screenshotBtn = document.getElementById('share-screenshot-btn');
+  
+  // Get current active screen
+  const mainMenu = document.getElementById('main-menu');
+  const scenarioScreen = document.getElementById('scenario-screen');
+  const detailsScreen = document.getElementById('animal-details-screen');
+  const continentScreen = document.getElementById('continent-screen');
+  const infoScreen = document.getElementById('info-screen');
+  const tutorialScreen = document.getElementById('tutorial-screen');
+  
+  // Check which screen is active
+  const isMainMenu = mainMenu && mainMenu.classList.contains('active');
+  const isScenarioScreen = scenarioScreen && scenarioScreen.classList.contains('active');
+  const isDetailsScreen = detailsScreen && detailsScreen.classList.contains('active');
+  const isContinentScreen = continentScreen && continentScreen.classList.contains('active');
+  const isInfoScreen = infoScreen && infoScreen.classList.contains('active');
+  const isTutorialScreen = tutorialScreen && tutorialScreen.classList.contains('active');
+  
+  // Show/Hide Menu button (shows on ALL screens except Main Menu)
+  if (menuBtn) {
+    if (isMainMenu) {
+      menuBtn.style.display = 'none';
+    } else {
+      menuBtn.style.display = 'flex';
+    }
+  }
+  
+  // Show/Hide Screenshot button (shows ONLY on Scenario & Animal Details screens)
+  if (screenshotBtn) {
+    if (isScenarioScreen || isDetailsScreen) {
+      screenshotBtn.style.display = 'flex';
+    } else {
+      screenshotBtn.style.display = 'none';
+    }
   }
 }
 
@@ -489,8 +533,8 @@ function loadScenario() {
     optionsDiv.appendChild(button);
   });
   
-  // Update screenshot button
-  updateScreenshotButton();
+  // Update floating buttons
+  updateFloatingButtons();
 }
 
 // Handle answer selection
@@ -859,7 +903,7 @@ function populateList(elementId, items) {
   });
 }
 
-// Back to animal list from details screen - FIXED VERSION
+// Back to animal list from details screen
 function backToAnimalList() {
   showScreen("info-screen");
   loadAnimalList();
@@ -1089,31 +1133,17 @@ function adjustForMobile() {
   }
 }
 
-// Show/Hide share screenshot button
-function updateScreenshotButton() {
-  const shareBtn = document.getElementById('share-screenshot-btn');
-  if (!shareBtn) return;
-  
-  // Show on scenario screen and animal details screen
-  const scenarioScreen = document.getElementById('scenario-screen');
-  const detailsScreen = document.getElementById('animal-details-screen');
-  
-  if ((scenarioScreen && scenarioScreen.classList.contains('active')) ||
-      (detailsScreen && detailsScreen.classList.contains('active'))) {
-    shareBtn.style.display = 'flex';
-  } else {
-    shareBtn.style.display = 'none';
-  }
-}
-
 // ===== SCREENSHOT FEATURE =====
 
 let currentScreenshot = null;
 
 function takeScreenshot() {
   // Disable buttons temporarily
-  const shareBtn = document.getElementById('share-screenshot-btn');
-  if (shareBtn) shareBtn.style.opacity = '0.5';
+  const menuBtn = document.getElementById('back-to-menu-btn');
+  const screenshotBtn = document.getElementById('share-screenshot-btn');
+  
+  if (menuBtn) menuBtn.style.opacity = '0.5';
+  if (screenshotBtn) screenshotBtn.style.opacity = '0.5';
   
   // Get the current active screen
   const activeScreen = document.querySelector('.screen.active');
@@ -1145,8 +1175,10 @@ function captureScreenshot(element) {
     logging: false,
     onclone: function(clonedDoc) {
       // Remove floating buttons from screenshot
-      const shareBtn = clonedDoc.getElementById('share-screenshot-btn');
-      if (shareBtn) shareBtn.style.display = 'none';
+      const menuBtn = clonedDoc.getElementById('back-to-menu-btn');
+      const screenshotBtn = clonedDoc.getElementById('share-screenshot-btn');
+      if (menuBtn) menuBtn.style.display = 'none';
+      if (screenshotBtn) screenshotBtn.style.display = 'none';
     }
   };
   
@@ -1168,15 +1200,19 @@ function captureScreenshot(element) {
     }
     
     // Re-enable buttons
-    const shareBtn = document.getElementById('share-screenshot-btn');
-    if (shareBtn) shareBtn.style.opacity = '1';
+    const menuBtn = document.getElementById('back-to-menu-btn');
+    const screenshotBtn = document.getElementById('share-screenshot-btn');
+    if (menuBtn) menuBtn.style.opacity = '1';
+    if (screenshotBtn) screenshotBtn.style.opacity = '1';
   }).catch(error => {
     console.error('Screenshot error:', error);
     showNotification("Error", "Failed to take screenshot", "error");
     
     // Re-enable buttons
-    const shareBtn = document.getElementById('share-screenshot-btn');
-    if (shareBtn) shareBtn.style.opacity = '1';
+    const menuBtn = document.getElementById('back-to-menu-btn');
+    const screenshotBtn = document.getElementById('share-screenshot-btn');
+    if (menuBtn) menuBtn.style.opacity = '1';
+    if (screenshotBtn) screenshotBtn.style.opacity = '1';
   });
 }
 
