@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", function() {
   
   // Show welcome notification
   setTimeout(() => {
-    showNotification("Welcome!", "Start by playing scenarios or browsing the encyclopedia", "info");
+    showNotification("Welcome to Wildlife Guardian!", "Start by playing scenarios or browsing the encyclopedia", "info");
   }, 1000);
 });
 
@@ -501,13 +501,33 @@ function loadScenario() {
     infoImg.src = currentScenario.image;
   }
   
-  // Set danger level
+  // Set danger level and signs
   const animalInfo = getAnimalByName(currentScenario.animal);
   if (animalInfo) {
+    // Update danger level
     const dangerElement = document.getElementById("danger-level");
     if (dangerElement) {
-      dangerElement.innerHTML = 
-        `<i class="fas fa-exclamation-triangle"></i><span>${animalInfo.dangerLevel || "Medium Danger"}</span>`;
+      const dangerText = animalInfo.dangerLevel || "Medium Danger";
+      dangerElement.innerHTML = `<i class="fas fa-exclamation-triangle"></i><span>${dangerText}</span>`;
+      
+      // Add danger level class
+      dangerElement.className = "danger-level";
+      if (dangerText.includes("Low")) dangerElement.classList.add("low");
+      else if (dangerText.includes("Medium")) dangerElement.classList.add("medium");
+      else if (dangerText.includes("High")) dangerElement.classList.add("high");
+      else if (dangerText.includes("Extreme")) dangerElement.classList.add("extreme");
+    }
+    
+    // Display signs of aggression
+    const signsGrid = document.getElementById("signs-grid");
+    if (signsGrid && animalInfo.signsOfAggression) {
+      signsGrid.innerHTML = "";
+      animalInfo.signsOfAggression.forEach(sign => {
+        const signItem = document.createElement("div");
+        signItem.className = "sign-item";
+        signItem.innerHTML = `<i class="fas fa-exclamation-circle"></i><span>${sign}</span>`;
+        signsGrid.appendChild(signItem);
+      });
     }
   }
   
@@ -518,7 +538,11 @@ function loadScenario() {
   optionsDiv.innerHTML = "";
   
   const optionLetters = ["A", "B", "C", "D"];
-  currentScenario.options.forEach((option, index) => {
+  
+  // Shuffle options for random order
+  const shuffledOptions = [...currentScenario.options].sort(() => Math.random() - 0.5);
+  
+  shuffledOptions.forEach((option, index) => {
     const button = document.createElement("button");
     button.className = "option-btn";
     button.setAttribute("data-index", index);
@@ -535,6 +559,9 @@ function loadScenario() {
   
   // Update floating buttons
   updateFloatingButtons();
+  
+  // Scroll to top of scenario
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // Handle answer selection
@@ -554,7 +581,7 @@ function handleAnswer(selectedOption, scenario) {
     const optionText = opt.querySelector(".option-text").textContent;
     const scenarioOption = scenario.options.find(o => o.text === optionText);
     
-    if (scenarioOption.correct) {
+    if (scenarioOption && scenarioOption.correct) {
       opt.classList.add("correct");
     } else if (optionText === selectedOption.text && !selectedOption.correct) {
       opt.classList.add("incorrect");
@@ -614,12 +641,12 @@ function showFeedbackOverlay(isCorrect, points, explanation) {
   // Set feedback content
   if (isCorrect) {
     icon.innerHTML = '<i class="fas fa-check-circle"></i>';
-    title.textContent = "Correct!";
+    title.textContent = "Correct Answer!";
     scoreChange.textContent = `+${points} points`;
     scoreChange.style.background = "linear-gradient(135deg, #2ecc71, #27ae60)";
   } else {
     icon.innerHTML = '<i class="fas fa-times-circle"></i>';
-    title.textContent = "Incorrect";
+    title.textContent = "Incorrect Answer";
     scoreChange.textContent = "+0 points";
     scoreChange.style.background = "linear-gradient(135deg, #e74c3c, #c0392b)";
   }
@@ -866,14 +893,14 @@ function showAnimalDetails(animal) {
   
   // Set danger level
   const dangerLevels = {
-    "Low": { width: 25, color: "#2ecc71", text: "Low" },
-    "Medium": { width: 50, color: "#f39c12", text: "Medium" },
-    "High": { width: 75, color: "#e67e22", text: "High" },
-    "Extreme": { width: 100, color: "#e74c3c", text: "Extreme" }
+    "Low Danger": { width: 25, color: "#2ecc71", text: "Low" },
+    "Medium Danger": { width: 50, color: "#f39c12", text: "Medium" },
+    "High Danger": { width: 75, color: "#e67e22", text: "High" },
+    "Extreme Danger": { width: 100, color: "#e74c3c", text: "Extreme" }
   };
   
-  const dangerLevel = animal.dangerLevel || "Medium";
-  const dangerConfig = dangerLevels[dangerLevel] || dangerLevels.Medium;
+  const dangerLevel = animal.dangerLevel || "Medium Danger";
+  const dangerConfig = dangerLevels[dangerLevel] || dangerLevels["Medium Danger"];
   
   const dangerBar = document.getElementById("danger-bar");
   const dangerLevelText = document.getElementById("danger-level-text");
@@ -887,6 +914,9 @@ function showAnimalDetails(animal) {
     dangerLevelText.textContent = dangerConfig.text;
     dangerLevelText.style.color = dangerConfig.color;
   }
+  
+  // Update floating buttons
+  updateFloatingButtons();
 }
 
 // Populate list element
@@ -925,12 +955,12 @@ function shareRank() {
   const score = gameState.userScore;
   const animalCount = gameState.unlockedAnimals.length;
   
-  const shareText = `I'm a ${rank} in Wildlife Survival Game with ${score} points and ${animalCount} animals unlocked! Can you beat me? 🐘🦌🦁`;
+  const shareText = `I'm a ${rank} in Wildlife Guardian with ${score} points and ${animalCount} animals unlocked! Can you beat me? 🐘🦌🦁`;
   const shareUrl = window.location.href;
   
   if (navigator.share) {
     navigator.share({
-      title: 'Wildlife Survival Game',
+      title: 'Wildlife Guardian: Survival Challenge',
       text: shareText,
       url: shareUrl
     }).catch(err => {
@@ -1238,8 +1268,8 @@ async function shareScreenshot() {
     if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
       await navigator.share({
         files: [file],
-        title: 'Wildlife Survival Game',
-        text: `Check out my Wildlife Survival Game progress! Score: ${gameState.userScore}, Rank: ${document.getElementById('rank')?.textContent || 'Beginner'}`,
+        title: 'Wildlife Guardian',
+        text: `Check out my Wildlife Guardian progress! Score: ${gameState.userScore}, Rank: ${document.getElementById('rank')?.textContent || 'Beginner'}`,
       });
       
       showNotification("Shared!", "Screenshot shared successfully", "success");
@@ -1248,7 +1278,7 @@ async function shareScreenshot() {
       // Fallback: Download the image
       const link = document.createElement('a');
       link.href = currentScreenshot;
-      link.download = 'wildlife-survival-screenshot.png';
+      link.download = 'wildlife-guardian-screenshot.png';
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -1263,7 +1293,7 @@ async function shareScreenshot() {
       // Fallback to download if share fails
       const link = document.createElement('a');
       link.href = currentScreenshot;
-      link.download = 'wildlife-survival-screenshot.png';
+      link.download = 'wildlife-guardian-screenshot.png';
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -1292,3 +1322,21 @@ window.getUnlockedAnimals = function() {
 window.getLockedAnimals = function() {
   return animalsInfo.filter(animal => !gameState.unlockedAnimals.includes(animal.name));
 };
+
+// Load scenario function
+window.loadScenario = loadScenario;
+window.handleAnswer = handleAnswer;
+window.nextScenario = nextScenario;
+window.backToMenu = backToMenu;
+window.showInfo = showInfo;
+window.showTutorial = showTutorial;
+window.showContinentSelect = showContinentSelect;
+window.selectContinent = selectContinent;
+window.startScenario = startScenario;
+window.shareRank = shareRank;
+window.showAnimalDetails = showAnimalDetails;
+window.backToAnimalList = backToAnimalList;
+window.backToMenuFromFeedback = backToMenuFromFeedback;
+window.takeScreenshot = takeScreenshot;
+window.closeScreenshotOverlay = closeScreenshotOverlay;
+window.shareScreenshot = shareScreenshot;
