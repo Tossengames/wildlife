@@ -440,6 +440,9 @@ function startScenario() {
 function loadScenario() {
   console.log("Loading scenario...");
   
+// Auto-scroll to top when loading new scenario
+document.getElementById('scenario-screen').scrollTop = 0;
+
   if (scenarioQueue.length === 0) {
     generateScenarioQueue();
   }
