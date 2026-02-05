@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Wildlife Guardian: Survival Challenge</title>
+  <title>Wildlife Survival Game</title>
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- html2canvas for screenshots -->
@@ -33,7 +33,7 @@
             <i class="fas fa-paw"></i>
             <i class="fas fa-mountain"></i>
           </div>
-          <h1>Wildlife Guardian</h1>
+          <h1>Wildlife Survival</h1>
           <p class="tagline">Test your wildlife knowledge in challenging scenarios</p>
         </div>
       </header>
@@ -108,7 +108,7 @@
       
       <footer class="game-footer">
         <p>Learn wildlife safety through interactive scenarios</p>
-        <p class="copyright">© 2024 Wildlife Guardian</p>
+        <p class="copyright">© 2024 Wildlife Survival Game</p>
       </footer>
     </div>
   </div>
@@ -227,12 +227,10 @@
           <p id="animal-desc">You're hiking in a North American forest when you encounter a large moose. It's staring directly at you with its ears forward, hooves pawing the ground aggressively. Its eyes are wide and focused on your movement.</p>
         </div>
         
-        <!-- SIGNS SECTION -->
-        <div class="signs-container" id="signs-container">
-          <h3><i class="fas fa-binoculars"></i> Signs to Look For:</h3>
-          <div class="signs-grid" id="signs-grid">
-            <!-- Signs will be dynamically added here -->
-          </div>
+        <div class="situation-tags">
+          <span class="tag"><i class="fas fa-exclamation-circle"></i> Aggressive Signs</span>
+          <span class="tag"><i class="fas fa-brain"></i> Decision Required</span>
+          <span class="tag"><i class="fas fa-stopwatch"></i> Quick Response</span>
         </div>
       </div>
       
@@ -440,14 +438,14 @@
         
         <div class="tutorial-card">
           <div class="tutorial-icon">3</div>
-          <h3>Watch for Signs</h3>
-          <p>Look for aggressive signs like ears back, tail flicking, or vocalizations.</p>
+          <h3>Choose Your Action</h3>
+          <p>Select the best response based on the animal's behavior and known survival tips.</p>
         </div>
         
         <div class="tutorial-card">
           <div class="tutorial-icon">4</div>
-          <h3>Choose Your Action</h3>
-          <p>Select the best response based on the animal's behavior and known survival tips.</p>
+          <h3>Learn and Progress</h3>
+          <p>Get feedback on your choice, earn points, unlock new animals, and increase your rank.</p>
         </div>
       </div>
       
@@ -455,8 +453,8 @@
         <h3><i class="fas fa-lightbulb"></i> Pro Tips</h3>
         <ul>
           <li>Study animals in the Encyclopedia before playing</li>
-          <li>Pay attention to the signs of aggression listed</li>
           <li>Unlock animals by reaching certain scores</li>
+          <li>Your highest rank is saved automatically</li>
           <li>Read explanations carefully for survival info</li>
         </ul>
       </div>
@@ -473,6 +471,8 @@
   <!-- Game Notification System -->
   <div id="notification-container"></div>
   
+  <!-- ===== NEW ELEMENTS FOR MOBILE OPTIMIZATIONS ===== -->
+  
   <!-- Screenshot Overlay -->
   <div id="screenshot-overlay" class="screenshot-overlay">
     <img id="screenshot-preview" class="screenshot-preview" alt="Screenshot Preview">
@@ -487,10 +487,13 @@
   </div>
   
   <!-- FLOATING BUTTONS -->
+  
+  <!-- Menu Button (shows on all screens except Main Menu) -->
   <button id="back-to-menu-btn" class="back-to-menu-btn" onclick="backToMenu()" style="display: none;">
     <i class="fas fa-home"></i>
   </button>
   
+  <!-- Screenshot Button (shows only on Scenario & Animal Details screens) -->
   <button id="share-screenshot-btn" class="share-screenshot-btn" onclick="takeScreenshot()" style="display: none;">
     <i class="fas fa-camera"></i>
   </button>
