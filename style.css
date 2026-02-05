@@ -2140,3 +2140,97 @@ body {
 /* Force scroll to top when loading new scenario (add to JavaScript) */
 /* Add this to your loadScenario() function in main.js: */
 /* document.getElementById('scenario-screen').scrollTop = 0; */
+
+
+/* Make feedback modal smaller overall */
+.feedback-modal {
+  max-width: 450px !important; /* Smaller width */
+  border-radius: 20px !important; /* Smaller radius */
+}
+
+.feedback-header {
+  padding: 20px !important; /* Reduced padding */
+  border-radius: 20px 20px 0 0 !important;
+}
+
+.feedback-icon {
+  font-size: 2.5rem !important; /* Smaller icon */
+}
+
+.feedback-title-container h3 {
+  font-size: 1.3rem !important; /* Smaller title */
+  margin-bottom: 5px !important;
+}
+
+.feedback-score-change {
+  padding: 6px 15px !important; /* Smaller score badge */
+  font-size: 0.9rem !important;
+  border-radius: 15px !important;
+}
+
+.feedback-content {
+  padding: 20px !important; /* Reduced padding */
+}
+
+/* Make explanation text smaller */
+.explanation-section h4 {
+  font-size: 1rem !important; /* Smaller heading */
+  margin-bottom: 10px !important;
+}
+
+#feedback-text {
+  font-size: 0.9rem !important; /* Smaller text */
+  padding: 15px !important;
+  line-height: 1.4 !important;
+  border-radius: 10px !important;
+}
+
+/* Make unlock notification smaller */
+#unlock-notification {
+  padding: 15px !important;
+  font-size: 0.9rem !important;
+  border-radius: 10px !important;
+  margin-bottom: 15px !important;
+}
+
+/* Make session stats smaller */
+.session-stats {
+  gap: 10px !important;
+  margin-top: 15px !important;
+}
+
+.session-stats .stat {
+  padding: 15px 10px !important;
+  border-radius: 10px !important;
+}
+
+.session-stats .stat-label {
+  font-size: 0.7rem !important; /* Smaller labels */
+  margin-bottom: 5px !important;
+}
+
+.session-stats .stat-value {
+  font-size: 1.3rem !important; /* Smaller numbers */
+}
+
+/* Make feedback action buttons smaller */
+.feedback-actions {
+  padding: 20px !important;
+  gap: 10px !important;
+  border-radius: 0 0 20px 20px !important;
+}
+
+.feedback-actions button {
+  padding: 12px !important; /* Smaller buttons */
+  font-size: 0.9rem !important;
+  border-radius: 10px !important;
+}
+
+/* Make incorrect X icon red */
+.feedback-icon i.fa-times-circle {
+  color: #e74c3c !important; /* Red color for incorrect */
+}
+
+/* You'll also need to update JavaScript to add correct class */
+/* In your showFeedbackOverlay() function, add this: */
+/* if (!isCorrect) icon.querySelector('i').classList.add('fa-times-circle'); */
