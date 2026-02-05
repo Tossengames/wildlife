@@ -2043,3 +2043,31 @@ button {
 body {
   overscroll-behavior-y: contain;
 }
+
+/* Reduce header size */
+.game-header {
+  padding: 20px 20px 10px !important;
+}
+.game-header h1 {
+  font-size: 1.8rem !important;
+}
+.logo-icon {
+  font-size: 2rem !important;
+}
+
+/* Reduce stats panel size */
+.stats-panel {
+  padding: 20px !important;
+  margin: 15px 20px !important;
+}
+.stat-item {
+  padding: 12px 10px !important;
+}
+.stat-icon {
+  width: 50px !important;
+  height: 50px !important;
+  font-size: 1.5rem !important;
+}
+.stat-value {
+  font-size: 1.2rem !important;
+}
