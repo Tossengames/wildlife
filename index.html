@@ -303,7 +303,9 @@
   <div id="info-screen" class="screen">
     <div class="screen-container">
       <div class="screen-header">
-        <div class="header-spacer"></div>
+        <button class="btn-back-small" onclick="backToMenu()">
+          <i class="fas fa-arrow-left"></i>
+        </button>
         <h2>Animal Encyclopedia</h2>
         <div class="header-spacer"></div>
       </div>
@@ -334,7 +336,7 @@
   <div id="animal-details-screen" class="screen">
     <div class="screen-container">
       <div class="details-header">
-        <button class="btn-back-small" onclick="goBack()">
+        <button class="btn-back-small" onclick="backToAnimalList()">
           <i class="fas fa-arrow-left"></i>
         </button>
         <h2 id="info-name">Moose</h2>
@@ -469,7 +471,7 @@
   <!-- Game Notification System -->
   <div id="notification-container"></div>
   
-  <!-- ===== NEW ELEMENTS ===== -->
+  <!-- ===== NEW ELEMENTS FOR MOBILE OPTIMIZATIONS ===== -->
   
   <!-- Screenshot Overlay -->
   <div id="screenshot-overlay" class="screenshot-overlay">
@@ -484,13 +486,15 @@
     </div>
   </div>
   
-  <!-- ENCYCLOPEDIA BACK BUTTON (Only shows on info-screen and animal-details-screen) -->
-  <button id="encyclopedia-back-btn" onclick="backToMenu()">
-    <i class="fas fa-home"></i> Back to Menu
+  <!-- FLOATING BUTTONS -->
+  
+  <!-- Menu Button (shows on all screens except Main Menu) -->
+  <button id="back-to-menu-btn" class="back-to-menu-btn" onclick="backToMenu()" style="display: none;">
+    <i class="fas fa-home"></i>
   </button>
   
-  <!-- Screenshot Button -->
-  <button id="share-screenshot-btn" class="share-screenshot-btn" onclick="takeScreenshot()">
+  <!-- Screenshot Button (shows only on Scenario & Animal Details screens) -->
+  <button id="share-screenshot-btn" class="share-screenshot-btn" onclick="takeScreenshot()" style="display: none;">
     <i class="fas fa-camera"></i>
   </button>
   
@@ -498,8 +502,5 @@
   <script src="scenarios.js"></script>
   <script src="animals.js"></script>
   <script src="main.js"></script>
-<button id="encyclopedia-back-btn" onclick="backToMenu()">
-  <i class="fas fa-home"></i> Back to Menu
-</button>
 </body>
 </html>
