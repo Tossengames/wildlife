@@ -2234,3 +2234,182 @@ body {
 /* You'll also need to update JavaScript to add correct class */
 /* In your showFeedbackOverlay() function, add this: */
 /* if (!isCorrect) icon.querySelector('i').classList.add('fa-times-circle'); */
+
+/* Make encyclopedia header smaller */
+#info-screen .screen-header {
+  padding: 15px 0 10px !important;
+}
+
+#info-screen .screen-header h2 {
+  font-size: 1.3rem !important;
+}
+
+#info-screen .screen-subtitle {
+  font-size: 0.8rem !important;
+  margin-bottom: 15px !important;
+}
+
+/* Make search/filter controls smaller */
+.encyclopedia-controls {
+  margin-bottom: 15px !important;
+}
+
+#animal-search {
+  padding: 12px 20px 12px 45px !important;
+  font-size: 0.9rem !important;
+  border-radius: 10px !important;
+}
+
+.search-container i {
+  font-size: 1rem !important;
+  left: 15px !important;
+}
+
+#continent-filter {
+  padding: 12px 20px !important;
+  font-size: 0.9rem !important;
+  border-radius: 10px !important;
+  padding-right: 50px !important;
+  background-position: right 15px center !important;
+}
+
+/* Make animal list items smaller */
+.animal-list {
+  gap: 12px !important;
+}
+
+.animal-item {
+  border-radius: 15px !important;
+}
+
+.animal-item-image {
+  height: 80px !important; /* Smaller image */
+}
+
+.animal-item-info {
+  padding: 12px 10px !important;
+}
+
+.animal-item-name {
+  font-size: 0.9rem !important;
+  margin-bottom: 3px !important;
+}
+
+.animal-item-continent {
+  font-size: 0.75rem !important;
+  margin-bottom: 5px !important;
+}
+
+.animal-item-status {
+  font-size: 0.7rem !important;
+}
+
+.animal-item.locked::after {
+  font-size: 0.9rem !important;
+  top: 10px !important;
+  right: 10px !important;
+}
+
+/* Make animal details screen smaller */
+#animal-details-screen .details-header {
+  padding: 15px 0 0 !important;
+  margin-bottom: 15px !important;
+}
+
+#animal-details-screen .details-header h2 {
+  font-size: 1.3rem !important;
+}
+
+.detail-continent {
+  padding: 4px 12px !important;
+  font-size: 0.8rem !important;
+  border-radius: 15px !important;
+}
+
+/* Make details image smaller */
+.details-image-container {
+  height: 150px !important;
+  margin-bottom: 15px !important;
+  border-radius: 15px !important;
+}
+
+.animal-status {
+  padding: 6px 12px !important;
+  font-size: 0.8rem !important;
+  border-radius: 15px !important;
+  top: 10px !important;
+  right: 10px !important;
+}
+
+/* Make description text smaller */
+.detail-description {
+  font-size: 0.9rem !important;
+  padding: 15px !important;
+  margin-bottom: 20px !important;
+  border-radius: 15px !important;
+  line-height: 1.4 !important;
+}
+
+/* Make detail sections smaller */
+.details-grid {
+  gap: 15px !important;
+  margin-bottom: 20px !important;
+}
+
+.detail-section {
+  padding: 15px !important;
+  border-radius: 15px !important;
+}
+
+.detail-section h3, .detail-section h4 {
+  font-size: 1rem !important;
+  margin-bottom: 12px !important;
+}
+
+.detail-section h4 {
+  font-size: 0.9rem !important;
+}
+
+.detail-list li {
+  padding: 8px 0 !important;
+  font-size: 0.85rem !important;
+  line-height: 1.3 !important;
+}
+
+/* Make statistics smaller */
+.details-grid .stats-grid {
+  gap: 12px !important;
+}
+
+.details-grid .stat-item {
+  padding: 12px !important;
+  border-radius: 10px !important;
+  gap: 8px !important;
+}
+
+.details-grid .stat-label {
+  font-size: 0.75rem !important;
+}
+
+.details-grid .stat-value {
+  font-size: 0.9rem !important;
+}
+
+.danger-bar-container {
+  height: 6px !important;
+  margin-top: 3px !important;
+}
+
+.danger-level-text {
+  font-size: 0.8rem !important;
+  margin-top: 5px !important;
+}
+
+.fun-fact {
+  font-size: 0.85rem !important;
+  padding: 12px !important;
+  border-radius: 10px !important;
+  margin-top: 5px !important;
+  border-left-width: 2px !important;
+}
+
