@@ -2039,3 +2039,104 @@ body {
 .screen.active#main-menu ~ .back-to-menu-btn {
   display: none !important;
 }
+
+/* Remove the entire scenario header section */
+.scenario-header {
+  display: none !important;
+}
+
+.header-top {
+  display: none !important;
+}
+
+.scenario-progress {
+  display: none !important;
+}
+
+.scenario-score {
+  display: none !important;
+}
+
+/* Make animal card smaller */
+.animal-card {
+  margin-top: 10px !important;
+  margin-bottom: 15px !important;
+}
+
+.animal-header {
+  padding: 15px !important; /* Reduced padding */
+}
+
+.animal-header h2 {
+  font-size: 1.3rem !important; /* Smaller animal name */
+}
+
+.animal-continent {
+  padding: 4px 10px !important; /* Smaller continent tag */
+  font-size: 0.8rem !important;
+}
+
+.danger-level {
+  padding: 4px 12px !important; /* Smaller danger tag */
+  font-size: 0.8rem !important;
+}
+
+/* Make animal image smaller */
+.animal-image-container {
+  height: 150px !important; /* Much smaller image */
+}
+
+/* Make scenario description text smaller */
+.scenario-description {
+  padding: 15px !important;
+  font-size: 0.9rem !important; /* Smaller text */
+  line-height: 1.4 !important;
+  min-height: 80px !important; /* Reduced height */
+}
+
+/* Remove the situation tags completely */
+.situation-tags {
+  display: none !important;
+}
+
+/* Make options container smaller */
+.options-container h3 {
+  font-size: 1rem !important; /* Smaller question heading */
+  margin-bottom: 10px !important;
+}
+
+/* Make action buttons much smaller */
+.options-grid {
+  gap: 8px !important; /* Less space between buttons */
+}
+
+.option-btn {
+  padding: 10px 15px !important; /* Much smaller padding */
+  min-height: 50px !important; /* Reduced height */
+  font-size: 0.85rem !important; /* Smaller text */
+  border-radius: 10px !important;
+}
+
+.option-icon {
+  width: 30px !important; /* Smaller option letter circle */
+  height: 30px !important;
+  font-size: 0.9rem !important;
+}
+
+.option-text {
+  line-height: 1.3 !important;
+}
+
+/* Auto-scroll to top when new scenario loads */
+#scenario-screen {
+  scroll-behavior: smooth;
+}
+
+/* Snap to top when scenario loads */
+#scenario-screen.active {
+  scroll-top: 0;
+}
+
+/* Force scroll to top when loading new scenario (add to JavaScript) */
+/* Add this to your loadScenario() function in main.js: */
+/* document.getElementById('scenario-screen').scrollTop = 0; */
