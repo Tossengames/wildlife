@@ -2064,10 +2064,21 @@ body {
   padding: 12px 10px !important;
 }
 .stat-icon {
-  width: 50px !important;
-  height: 50px !important;
+  width: 15px !important;
+  height: 15px !important;
   font-size: 1.5rem !important;
 }
 .stat-value {
   font-size: 1.2rem !important;
+}
+
+/* Hide back button on main menu */
+#main-menu.active ~ .back-to-menu-btn,
+#main-menu.active + .back-to-menu-btn {
+  display: none !important;
+}
+
+/* Alternative: Target by screen state */
+.screen.active#main-menu ~ .back-to-menu-btn {
+  display: none !important;
 }
